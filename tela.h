@@ -6,13 +6,14 @@
 
 //Uma classe que cuida de toda a abstracao de carregar imagens na tela
 //faz com que uma mesma imagem nao seja carregada duas vezes, criar janelas e liberar as texturas ao final
-class Imagens{
+class Tela{
     public:
-        Imagens();
-        ~Imagens();
+        Tela();
+        ~Tela();
         SDL_Surface* carregarSuperficie(std::string caminhoParaImagem);
         SDL_Texture* carregarTextura(std::string caminhoParaImagem);
-        void apresentarTela();
+        
+        void apresentar();
 
         SDL_Renderer* getRenderer();
 

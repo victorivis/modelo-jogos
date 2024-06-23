@@ -1,9 +1,11 @@
-#include "imagens.h"
+#pragma once
+#include "tela.h"
 
 class Jogo{
     public:
         Jogo();
         ~Jogo();
         int loopPrincipal();
-        void desenhar(Imagens &imagens);
+        
+        void desenhar(Tela &tela);
 };

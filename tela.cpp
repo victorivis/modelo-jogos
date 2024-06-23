@@ -1,4 +1,4 @@
-#include "imagens.h"
+#include "tela.h"
 #include "global.h"
 #include <iostream>
 
@@ -10,7 +10,7 @@ namespace definicoesJanela{
     const Uint32 flags = SDL_WINDOW_RESIZABLE;
 };
 
-Imagens::Imagens(){
+Tela::Tela(){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
@@ -20,7 +20,7 @@ Imagens::Imagens(){
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
 }
 
-Imagens::~Imagens(){
+Tela::~Tela(){
     int numSur=0, numTex=0;
     for(auto textura: _todasAsTexturas){
         numTex++;
@@ -44,25 +44,25 @@ Imagens::~Imagens(){
     }
 }
 
-SDL_Surface* Imagens::carregarSuperficie(std::string caminhoParaImagem){
+SDL_Surface* Tela::carregarSuperficie(std::string caminhoParaImagem){
     if(_todasAsSuperficies.count(caminhoParaImagem) == 0){
         _todasAsSuperficies[caminhoParaImagem] = IMG_Load(caminhoParaImagem.c_str());
     }
     return _todasAsSuperficies[caminhoParaImagem];
 }
 
-SDL_Texture* Imagens::carregarTextura(std::string caminhoParaImagem){
+SDL_Texture* Tela::carregarTextura(std::string caminhoParaImagem){
     if(_todasAsTexturas.count(caminhoParaImagem) == 0){
         _todasAsTexturas[caminhoParaImagem] = SDL_CreateTextureFromSurface(getRenderer(), carregarSuperficie(caminhoParaImagem));
     }
     return _todasAsTexturas[caminhoParaImagem];
 }
 
-void Imagens::apresentarTela(){
+void Tela::apresentar(){
     SDL_RenderPresent(getRenderer());
     SDL_RenderClear(_render);
 }
 
-SDL_Renderer* Imagens::getRenderer(){
+SDL_Renderer* Tela::getRenderer(){
     return _render;
 }
