@@ -1,6 +1,6 @@
 #pragma once
 #include "tela.h"
-#include "entidade.h"
+#include "player.h"
 
 class Jogo{
     public:
@@ -12,5 +12,5 @@ class Jogo{
         void desenhar(Tela &tela);
     
     private:
-        Entidade player;
+        Player player;
 };

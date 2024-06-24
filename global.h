@@ -3,7 +3,7 @@
 // Por algum motivo essas variaveis estao sendo declaradas multiplas vezes mesmo com pragma once
 // o namespace previne que isso aconteca
 namespace{
-    bool mostrarDebug=true;
+    bool mostrarDebug=false;
     int aumentarSprite=4;
     const int FPS = 30;
 }

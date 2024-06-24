@@ -2,50 +2,67 @@
 #include "imagem.h"
 
 namespace constantesPlayer{
-    float moveSpeed = 0.2f;
-    float moveCap = 2.0f;
+    float moveSpeed = 1.0f;
+    float moveCap = 4.0f;
 };
 
-Player::Player(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem):
-    Entidade(tex, tamanho, posTela, posImagem){
-        //adicionarAnimacao("correrDireita", {Vector2(0, 0), 2, 2});
-        //adicionarAnimacao("correrEsquerda", {Vector2(0, 16), 2, 2});
-        //selecionarAnimacao("correrDireita");
-    }
+//Por algum motivo eh impossivel selecionar a animacao no construtor
+Player::Player(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
+    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0) {
+
+    adicionarAnimacao("idleEsquerda", infoAnimacao(Vector2(0, 0), 10000, 1));
+    adicionarAnimacao("idleDireita", infoAnimacao(Vector2(0, 16), 10000, 1));
+
+    adicionarAnimacao("correrEsquerda", infoAnimacao(Vector2(0, 0), 300, 3));
+    adicionarAnimacao("correrDireita", infoAnimacao(Vector2(0, 16), 300, 3));
+}
 
 void Player::mover(Direcao direcao){
     switch (direcao){
         case DIREITA:
-            _dx += constantesPlayer::moveSpeed;
+            if(_dx < constantesPlayer::moveCap) _dx += constantesPlayer::moveSpeed;
+            if(_olhando != DIREITA){
+                selecionarAnimacao("correrDireita");
+                _olhando = DIREITA;
+            }
             break;
         case ESQUERDA:
-            _dx -= constantesPlayer::moveSpeed;
+            if(-_dx < constantesPlayer::moveCap) _dx -= constantesPlayer::moveSpeed;
+            if(_olhando != ESQUERDA){
+                selecionarAnimacao("correrEsquerda");
+                _olhando = ESQUERDA;
+            }
             break;
         case CIMA:
-            _dy -= constantesPlayer::moveSpeed;
+            if(-_dy < constantesPlayer::moveCap) _dy -= constantesPlayer::moveSpeed;
+            //_olhando = CIMA;
             break;
         case BAIXO:
-            _dy += constantesPlayer::moveSpeed;
+            if(_dy < constantesPlayer::moveCap) _dy += constantesPlayer::moveSpeed;
+            //_olhando = BAIXO;
             break;
     }
 }
 
-void Player::executarControles(SDL_Scancode tecla){
-    if(tecla == SDL_SCANCODE_W){
+void Player::executarControles(Input &input){
+    if(input.foiPressionada(SDL_SCANCODE_W)){
         mover(CIMA);
     }
-    else if(tecla == SDL_SCANCODE_S){
+    if(input.foiPressionada(SDL_SCANCODE_S)){
         mover(BAIXO);
     }
-    else if(tecla == SDL_SCANCODE_A){
+    if(input.foiPressionada(SDL_SCANCODE_A)){
         mover(ESQUERDA);
     }
-    else if(tecla == SDL_SCANCODE_D){
+    if(input.foiPressionada(SDL_SCANCODE_D)){
         mover(DIREITA);
     }
 }
 
 void Player::atualizar(int tempoDecorrido){
+    if(_animacaoAtual == nullptr){
+        selecionarAnimacao("idleDireita");
+    }
     Entidade::atualizar(tempoDecorrido);
 
     _x += _dx;
@@ -54,7 +71,4 @@ void Player::atualizar(int tempoDecorrido){
 
 void Player::mostrar(Tela &tela){
     Entidade::mostrar(tela);
-    //SDL_Rect origem = {_posImagem.x, _posImagem.y, _tamanho.x, _tamanho.y};
-    //SDL_Rect destino = {_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite};
-    //SDL_RenderCopy(tela.getRenderer(), _tex, &origem, &destino);
 }

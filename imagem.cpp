@@ -16,3 +16,19 @@ void Imagem::mostrar(Tela &tela){
     SDL_Rect destino = {_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite};
     SDL_RenderCopy(tela.getRenderer(), _tex, &origem, &destino);
 }
+
+void Imagem::setX(int num){
+    _x = num;
+}
+
+void Imagem::setY(int num){
+    _y = num;
+}
+
+int Imagem::getX(){
+    return _x;
+}
+
+int Imagem::getY(){
+    return _y;
+}

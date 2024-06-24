@@ -4,7 +4,7 @@
 
 namespace definicoesJanela{
     const int comprimento= 720;
-    const int largura = 480;
+    const int altura = 480;
     const int posX = SDL_WINDOWPOS_CENTERED;
     const int posY = SDL_WINDOWPOS_CENTERED;
     const Uint32 flags = SDL_WINDOW_RESIZABLE;
@@ -14,7 +14,7 @@ Tela::Tela(){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
-        definicoesJanela::comprimento, definicoesJanela::largura, definicoesJanela::flags);
+        definicoesJanela::comprimento, definicoesJanela::altura, definicoesJanela::flags);
     _render = SDL_CreateRenderer(_janela, -1, 0);
 
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);

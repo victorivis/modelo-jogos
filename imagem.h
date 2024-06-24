@@ -12,11 +12,16 @@ class Imagem{
         ~Imagem(){}
 
         void mostrar(Tela &tela);
+        
+        void setX(int num);
+        void setY(int num);
+        int getX();
+        int getY();
 
     protected:
         SDL_Texture* _tex;
         Vector2 _tamanho;
         Vector2 _posImagem;
-        int _x;
-        int _y;
+        float _x;
+        float _y;
 };
