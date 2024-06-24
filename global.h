@@ -5,8 +5,12 @@
 namespace{
     bool mostrarDebug=true;
     int aumentarSprite=4;
-    const int FPS = 25;
+    const int FPS = 30;
 }
+
+enum Direcao{
+    DIREITA, ESQUERDA, CIMA, BAIXO, NENHUM
+};
 
 struct Vector2{
     Vector2(){}
