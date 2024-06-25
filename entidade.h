@@ -1,4 +1,5 @@
 #include "imagem.h"
+#include "retangulo.h"
 #include <map>
 
 struct infoAnimacao{
@@ -26,9 +27,11 @@ class Entidade : public Imagem{
         //isso eh uma gambiarra porque nao eh possivel selecionar a animacao no construtor
         infoAnimacao* getAnimacao(std::string nome);
         infoAnimacao* getPrimeiraAnimacao();
+        Retangulo getCaixaColisao();
         //utiliza o void mostrar() de Imagem
     protected:
         int _indice;
         infoAnimacao* _animacaoAtual;
         std::map<std::string, infoAnimacao> _animacoes;
+        Retangulo _caixaColisao;
 };

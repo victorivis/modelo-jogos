@@ -25,6 +25,8 @@ void Entidade::atualizar(int tempoDecorrido){
             printf("\n");
         }
     }
+
+    _caixaColisao = Retangulo(_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite);
 }
 
 void Entidade::adicionarAnimacao(std::string nome, infoAnimacao info){
@@ -60,4 +62,8 @@ infoAnimacao* Entidade::getPrimeiraAnimacao(){
     else{
         return nullptr;
     }
+}
+
+Retangulo Entidade::getCaixaColisao(){
+    return _caixaColisao;
 }

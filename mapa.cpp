@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <tinyxml2.h>
+#include <cmath>
 
 #include "mapa.h"
 
@@ -14,6 +15,26 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
     std::cout << nomeArquivo << "\n";
 
     tinyxml2::XMLElement* pMapa = DocumentoMapa.FirstChildElement("map");
+
+    //recebendo blocos de colisao
+    tinyxml2::XMLElement* pOjectGroup = pMapa->FirstChildElement("objectgroup");
+    while(pOjectGroup){
+        if(pOjectGroup->Attribute("name") == std::string("colisoes")){
+            tinyxml2::XMLElement* pBlocoColisao = pOjectGroup->FirstChildElement("object");
+            while(pBlocoColisao){
+                int x = std::round(pBlocoColisao->FloatAttribute("x"));
+                int y = std::round(pBlocoColisao->FloatAttribute("y"));
+                int largura = std::round(pBlocoColisao->FloatAttribute("width"));
+                int altura = std::round(pBlocoColisao->FloatAttribute("height"));
+                _colisoes.push_back(Retangulo(x * aumentarSprite, y * aumentarSprite, largura * aumentarSprite, altura * aumentarSprite));
+
+                pBlocoColisao = pBlocoColisao->NextSiblingElement("object");
+            }
+        }
+        
+
+        pOjectGroup = pOjectGroup->NextSiblingElement("objectgroup");
+    }
 
     //recebendo informacoes do mapa
     tinyxml2::XMLElement* pTileset = pMapa->FirstChildElement("tileset");
@@ -56,8 +77,8 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
     
 
     for(int i=0; i<GidPosicao.size(); i++){
-        int posTelaX = (GidPosicao[i].y % larguraMapa) * larguraBloco;
-        int posTelaY = (GidPosicao[i].y / larguraMapa) * alturaBloco;
+        int posTelaX = (GidPosicao[i].y % larguraMapa) * larguraBloco * aumentarSprite;
+        int posTelaY = (GidPosicao[i].y / larguraMapa) * alturaBloco  * aumentarSprite;
 
         int posImagemX = (GidPosicao[i].x-1) % larguraTextura * larguraBloco;
         int posImagemY = (GidPosicao[i].x-1) / larguraTextura * alturaBloco;
@@ -73,7 +94,40 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
 void Mapa::mostrar(Tela& tela){
     for(int i=0; i<_blocos.size(); i++){
-        _blocos[i].mostrar(tela);
+        _blocos[i].mostrar(tela);    
+    }
+
+    if(exibirColisoes){
+        for(int i=0; i<_colisoes.size(); i++){
+            _colisoes[i].exibirRetangulo(tela);    
+        }
+    }
+}
+
+void Mapa::lidarColisao(Player& player){
+    for(int i=0; i<_colisoes.size(); i++){
+        Retangulo caixaPlayer = player.getCaixaColisao();
+        //caixaPlyer.debugRetangulo();
+        Direcao daColisao = _colisoes[i].ladoColisao(caixaPlayer);
+
+        if(daColisao != NENHUMA){
+            if(daColisao == DIREITA){
+                player.setX(_colisoes[i].getDireita()+1);
+                //std::cout << "Direita\n";
+            }
+            else if(daColisao == ESQUERDA){
+                player.setX(_colisoes[i].getEsquerda()-caixaPlayer.getLargura()-1);
+                //std::cout << "Esquerda\n";
+            }
+            else if(daColisao == CIMA){
+                player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura()-1);
+                //std::cout << "Cima\n";
+            }
+            else if(daColisao == BAIXO){
+                player.setY(_colisoes[i].getBaixo()+1);
+                //std::cout << "Baixo\n";
+            }
+        } 
     }
 }
 
@@ -101,8 +155,8 @@ void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& Gid
         //i++;
     }while(minhaString[i++]!='\0');
 
-    printf("split rodou\n");
-    for(int i=0; i<GidPosicao.size(); i++){
-        std::cout << GidPosicao[i].x << " " << GidPosicao[i].y << "\n";
-    }
+    // printf("split rodou\n");
+    // for(int i=0; i<GidPosicao.size(); i++){
+    //     std::cout << GidPosicao[i].x << " " << GidPosicao[i].y << "\n";
+    // }
 }

@@ -65,6 +65,7 @@ int Jogo::loopPrincipal(){
 
 void Jogo::atualizar(int tempo){
     player.atualizar(tempo);
+    _mapa.lidarColisao(player);
 }
 
 void Jogo::desenhar(Tela &tela){

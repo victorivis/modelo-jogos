@@ -59,6 +59,7 @@ SDL_Texture* Tela::carregarTextura(std::string caminhoParaImagem){
 }
 
 void Tela::apresentar(){
+    SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
     SDL_RenderPresent(getRenderer());
     SDL_RenderClear(_render);
 }
