@@ -4,14 +4,15 @@
 namespace constantesPlayer{
     float moveSpeed = 1.0f;
     float moveCap = 4.0f;
+    float atrito = 0.8f;
 };
 
 //Por algum motivo eh impossivel selecionar a animacao no construtor
 Player::Player(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
-    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0) {
+    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA){
 
-    adicionarAnimacao("idleEsquerda", infoAnimacao(Vector2(0, 0), 10000, 1));
-    adicionarAnimacao("idleDireita", infoAnimacao(Vector2(0, 16), 10000, 1));
+    adicionarAnimacao("idleEsquerda", infoAnimacao(Vector2(0, 0), 100, 1));
+    adicionarAnimacao("idleDireita", infoAnimacao(Vector2(0, 16), 100, 1));
 
     adicionarAnimacao("correrEsquerda", infoAnimacao(Vector2(0, 0), 300, 3));
     adicionarAnimacao("correrDireita", infoAnimacao(Vector2(0, 16), 300, 3));
@@ -45,17 +46,26 @@ void Player::mover(Direcao direcao){
 }
 
 void Player::executarControles(Input &input){
-    if(input.foiPressionada(SDL_SCANCODE_W)){
+    if(input.estaPressionada(SDL_SCANCODE_W)){
         mover(CIMA);
     }
-    if(input.foiPressionada(SDL_SCANCODE_S)){
+    if(input.estaPressionada(SDL_SCANCODE_S)){
         mover(BAIXO);
     }
-    if(input.foiPressionada(SDL_SCANCODE_A)){
+    if(input.estaPressionada(SDL_SCANCODE_A)){
         mover(ESQUERDA);
     }
-    if(input.foiPressionada(SDL_SCANCODE_D)){
+    if(input.estaPressionada(SDL_SCANCODE_D)){
         mover(DIREITA);
+    }
+
+    if(input.estaPressionada(SDL_SCANCODE_A)==false && input.estaPressionada(SDL_SCANCODE_D)==false){
+        _dx *= constantesPlayer::atrito;
+        _olhando == DIREITA ? selecionarAnimacao("idleDireita") : selecionarAnimacao("idleEsquerda");
+    }
+
+    if(input.estaPressionada(SDL_SCANCODE_W)==false && input.estaPressionada(SDL_SCANCODE_S)==false){
+        _dy *= constantesPlayer::atrito;
     }
 }
 

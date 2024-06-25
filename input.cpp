@@ -7,7 +7,7 @@ void Input::receberInput(SDL_Event& evento){
 	}
     else if(evento.type == SDL_KEYUP){
         teclaLiberada = evento.key.keysym.scancode;
-        teclasSeguradas[teclaPressionada] = false;
+        teclasSeguradas[teclaLiberada] = false;
     }
 }
 

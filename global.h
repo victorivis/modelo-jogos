@@ -4,12 +4,12 @@
 // o namespace previne que isso aconteca
 namespace{
     bool mostrarDebug=false;
-    int aumentarSprite=4;
-    const int FPS = 30;
+    int aumentarSprite=1;
+    const int FPS = 50;
 }
 
 enum Direcao{
-    DIREITA, ESQUERDA, CIMA, BAIXO, NENHUM
+    DIREITA, ESQUERDA, CIMA, BAIXO, NENHUMA
 };
 
 struct Vector2{
@@ -18,4 +18,13 @@ struct Vector2{
 
     int x;
     int y;
+};
+
+struct Vector3{
+    Vector3(){}
+    Vector3(int x, int y, int z): x(x), y(y), z(z){}
+
+    int x;
+    int y;
+    int z;
 };

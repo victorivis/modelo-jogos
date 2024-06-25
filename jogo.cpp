@@ -1,6 +1,7 @@
 #include "jogo.h"
 #include "global.h"
 #include "input.h"
+#include "mapa.h"
 
 #include <iostream>
 
@@ -15,11 +16,12 @@ Jogo::~Jogo(){
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
+    _mapa.carregarMapa(tela, "mapa-inicial");
 
     bool rodarLoop=true;
     SDL_Event evento;
     
-    SDL_Texture* alface = tela.carregarTextura("alface.png");
+    SDL_Texture* alface = tela.carregarTextura("assets/sprites/alface.png");
     player = Player(alface, Vector2(16, 16), Vector2(300, 300), Vector2(0, 0));
 
     int tempoInicial = SDL_GetTicks();
@@ -66,6 +68,7 @@ void Jogo::atualizar(int tempo){
 }
 
 void Jogo::desenhar(Tela &tela){
+    _mapa.mostrar(tela);
     player.mostrar(tela);
     tela.apresentar();
 }

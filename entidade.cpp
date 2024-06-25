@@ -43,7 +43,9 @@ void Entidade::selecionarAnimacao(std::string nome){
         _posImagem.y = _animacaoAtual->_frameInicial.y;
         _posImagem.x = _animacaoAtual->_frameInicial.x;
 
-        std::cout << "Duracao no ponteiro: " << _animacaoAtual->_duracao << "\n";
+        if(mostrarDebug){
+            std::cout << "Duracao no ponteiro: " << _animacaoAtual->_duracao << "\n";
+        }        
     }
 }
 
