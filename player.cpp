@@ -1,5 +1,6 @@
 #include "player.h"
 #include "imagem.h"
+#include "global.h"
 
 namespace constantesPlayer{
     float moveSpeed = 1.0f;
@@ -57,6 +58,9 @@ void Player::executarControles(Input &input){
     }
     if(input.estaPressionada(SDL_SCANCODE_D)){
         mover(DIREITA);
+    }
+    if(input.foiPressionada(SDL_SCANCODE_G)){
+        exibirColisoes = !exibirColisoes;
     }
 
     if(input.estaPressionada(SDL_SCANCODE_A)==false && input.estaPressionada(SDL_SCANCODE_D)==false){

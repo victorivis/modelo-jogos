@@ -4,7 +4,7 @@
 // o namespace previne que isso aconteca
 namespace{
     bool mostrarDebug=false;
-    bool exibirColisoes=true;
+    bool exibirColisoes=false;
     int aumentarSprite=1;
     const int FPS = 50;
 }

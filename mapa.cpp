@@ -15,6 +15,8 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
     std::cout << nomeArquivo << "\n";
 
     tinyxml2::XMLElement* pMapa = DocumentoMapa.FirstChildElement("map");
+    int larguraBloco = pMapa->IntAttribute("tilewidth");
+    int alturaBloco = pMapa->IntAttribute("tileheight");
 
     //recebendo blocos de colisao
     tinyxml2::XMLElement* pOjectGroup = pMapa->FirstChildElement("objectgroup");
@@ -38,22 +40,26 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
     //recebendo informacoes do mapa
     tinyxml2::XMLElement* pTileset = pMapa->FirstChildElement("tileset");
-    int larguraBloco = pTileset->IntAttribute("tilewidth");
-    int alturaBloco = pTileset->IntAttribute("tileheight");
+    while(pTileset){
+        int gidAtual = pTileset->IntAttribute("firstgid");
 
-    tinyxml2::XMLElement* pImage = pTileset->FirstChildElement("image");
-    const char* caminhoMapa = pImage->Attribute("source");
+        tinyxml2::XMLElement* pImage = pTileset->FirstChildElement("image");
+        const char* caminhoMapa = pImage->Attribute("source");
 
-    std::string imagemMapa = "assets/mapas/" + std::string(caminhoMapa);
-    SDL_Texture* tex = tela.carregarTextura(imagemMapa);
+        std::string imagemMapa = "assets/mapas/" + std::string(caminhoMapa);
+        SDL_Texture* tex = tela.carregarTextura(imagemMapa);
 
-    int larguraTextura = pImage->IntAttribute("width")  / larguraBloco;
-    int alturaTextura =  pImage->IntAttribute("height") / alturaBloco;
+        //int larguraTextura = pImage->IntAttribute("width")  / larguraBloco;
+        //int alturaTextura =  pImage->IntAttribute("height") / alturaBloco;
+
+        _infoBlocos.push_back(infoBloco(tex, gidAtual));
+
+        pTileset = pTileset->NextSiblingElement("tileset");
+    }
     
     tinyxml2::XMLElement* pLayer = pMapa->FirstChildElement("layer");
     int larguraMapa = pLayer->IntAttribute("width");
     int alturaMapa = pLayer->IntAttribute("height");
-    int primeiroGid = pLayer->IntAttribute("gid");
 
     //printf("%d %d %d %d\n%d %d %d %d\n", larguraMapa, alturaMapa, tilewidth, tileheight, texturaBlocoWidth, texturaBlocoHeight, larguraTextura, alturaTextura);
 
@@ -74,22 +80,43 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
         pLayer = pLayer->NextSiblingElement("layer");
     }
-    
 
+
+    //Faz a conversao os numeros contados de um ate o final do mapa para as coordenadas x e y
     for(int i=0; i<GidPosicao.size(); i++){
-        int posTelaX = (GidPosicao[i].y % larguraMapa) * larguraBloco * aumentarSprite;
-        int posTelaY = (GidPosicao[i].y / larguraMapa) * alturaBloco  * aumentarSprite;
+        int gidAtual = GidPosicao[i].x;
+        int posicaoComprimida = GidPosicao[i].y;
+        infoBloco blocoAtual;
 
-        int posImagemX = (GidPosicao[i].x-1) % larguraTextura * larguraBloco;
-        int posImagemY = (GidPosicao[i].x-1) / larguraTextura * alturaBloco;
+        for(int i=0; i<_infoBlocos.size(); i++){
+            if(gidAtual >= _infoBlocos[i].gid){
+                blocoAtual = _infoBlocos[i];
+            }
+        }
 
-        _blocos.push_back( Imagem(tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), Vector2(posImagemX, posImagemY)) );
+        int larguraTextura;
+        SDL_QueryTexture(blocoAtual.tex, NULL, NULL, &larguraTextura, NULL);
+        larguraTextura /= larguraBloco;
+
+        //std::cout << "Largura Textura: " << larguraTextura << " " << larguraTextura/larguraBloco << "\n";
+        //std::cout << "blocoAtual: " << blocoAtual.gid << " " << larguraTextura/larguraBloco << "\n";
+        //larguraTextura/=larguraBloco;
+
+        int posTelaX = (posicaoComprimida % larguraMapa) * larguraBloco * aumentarSprite;
+        int posTelaY = (posicaoComprimida / larguraMapa) * alturaBloco  * aumentarSprite;
+
+        int posImagemX = (gidAtual - blocoAtual.gid) % larguraTextura * larguraBloco;
+        int posImagemY = (gidAtual - blocoAtual.gid) / larguraTextura * alturaBloco;
+
+        //std::cout << "gidAtual " << gidAtual << " posImagemX: " << posImagemX << " posImagemY " << posImagemY << "\n";
+
+        _blocos.push_back( Imagem(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), Vector2(posImagemX, posImagemY)) );
     }
 
-   std::cout << imagemMapa << "\n";
-   SDL_RenderCopy(tela.getRenderer(), tex, NULL, NULL);
-   tela.apresentar();
-   SDL_Delay(1000);
+   //std::cout << imagemMapa << "\n";
+   //SDL_RenderCopy(tela.getRenderer(), tex, NULL, NULL);
+   //tela.apresentar();
+   //SDL_Delay(1000);
 }
 
 void Mapa::mostrar(Tela& tela){

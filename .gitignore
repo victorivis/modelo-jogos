@@ -1,3 +1,5 @@
 *.tiled-project
 *.tiled-session
 .vscode
+*.exe
+*.pdf

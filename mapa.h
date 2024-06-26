@@ -8,6 +8,13 @@
 
 void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& GidPosicao);
 
+struct infoBloco{
+    infoBloco(){}
+    infoBloco(SDL_Texture* textura, int gidAtual):tex(textura), gid(gidAtual){};
+    SDL_Texture* tex;
+    int gid;
+};
+
 class Mapa{
     public:
         Mapa(){};
@@ -19,6 +26,7 @@ class Mapa{
         void mostrar(Tela& tela);
 
     public:
+        std::vector<infoBloco> _infoBlocos;
         std::vector<Imagem> _blocos;
         std::vector<Retangulo> _colisoes;
 };
