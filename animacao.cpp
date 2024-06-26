@@ -6,16 +6,15 @@ Animacao::Animacao(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 p
     _numeroFrames(numeroFrames),
     _indice(0),
     _frameInicial(posImagem),
-    _duracao(duracao){}
+    _duracao(duracao),
+    _totalTempo(0){}
 
 void Animacao::atualizar(int tempo){
-    static int totalTempo=0;
-    totalTempo += tempo;
+    _totalTempo += tempo;
     
-    if(totalTempo / _duracao > 0){
+    if(_totalTempo / _duracao > 0){
         _indice = (_indice+1)%_numeroFrames;
-
-        totalTempo -= _duracao;
+        _totalTempo -= _duracao;
     }
 }
 

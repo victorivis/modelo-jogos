@@ -38,6 +38,8 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         pOjectGroup = pOjectGroup->NextSiblingElement("objectgroup");
     }
 
+
+    std::vector<infoBlocoAnimado> tilesAnimados;
     //recebendo informacoes do mapa
     tinyxml2::XMLElement* pTileset = pMapa->FirstChildElement("tileset");
     while(pTileset){
@@ -53,6 +55,29 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         //int alturaTextura =  pImage->IntAttribute("height") / alturaBloco;
 
         _infoBlocos.push_back(infoBloco(tex, gidAtual));
+
+        //Salvando animacoes
+        tinyxml2::XMLElement* pTile = pTileset->FirstChildElement("tile");
+        while(pTile){
+            int primeiroFrame = pTile->IntAttribute("id");
+            tinyxml2::XMLElement* pAnimacao = pTile->FirstChildElement("animation");
+            while(pAnimacao){
+                tinyxml2::XMLElement* pFrame = pAnimacao->FirstChildElement("frame");
+                int duracao;
+                std::vector<int> frames;
+                while (pFrame){
+                    frames.push_back(pFrame->IntAttribute("tileid"));
+                    duracao = pFrame->IntAttribute("duration");
+
+                    pFrame = pFrame->NextSiblingElement("frame");
+                }
+                tilesAnimados.push_back(infoBlocoAnimado(duracao, gidAtual, primeiroFrame, frames));
+
+                pAnimacao = pAnimacao->NextSiblingElement("animation");
+            }
+
+            pTile = pTile->NextSiblingElement("tile");
+        }
 
         pTileset = pTileset->NextSiblingElement("tileset");
     }
@@ -88,6 +113,18 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         int posicaoComprimida = GidPosicao[i].y;
         infoBloco blocoAtual;
 
+        bool temAnimacao=false;
+        int posAnimacao;
+
+        for(int i=0; i<tilesAnimados.size(); i++){
+            if(tilesAnimados[i].gidAbsoluto() == gidAtual){
+                printf("He he he, existe animacao %d\n", gidAtual);
+                temAnimacao = true;
+                posAnimacao = i;
+                break;
+            }
+        }
+
         for(int i=0; i<_infoBlocos.size(); i++){
             if(gidAtual >= _infoBlocos[i].gid){
                 blocoAtual = _infoBlocos[i];
@@ -98,25 +135,31 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         SDL_QueryTexture(blocoAtual.tex, NULL, NULL, &larguraTextura, NULL);
         larguraTextura /= larguraBloco;
 
-        //std::cout << "Largura Textura: " << larguraTextura << " " << larguraTextura/larguraBloco << "\n";
-        //std::cout << "blocoAtual: " << blocoAtual.gid << " " << larguraTextura/larguraBloco << "\n";
-        //larguraTextura/=larguraBloco;
-
+        
         int posTelaX = (posicaoComprimida % larguraMapa) * larguraBloco * aumentarSprite;
         int posTelaY = (posicaoComprimida / larguraMapa) * alturaBloco  * aumentarSprite;
+        Vector2 posImagem = calcularGidRelativo(gidAtual, blocoAtual.gid, larguraTextura, larguraBloco, alturaBloco);
 
-        int posImagemX = (gidAtual - blocoAtual.gid) % larguraTextura * larguraBloco;
-        int posImagemY = (gidAtual - blocoAtual.gid) / larguraTextura * alturaBloco;
-
-        //std::cout << "gidAtual " << gidAtual << " posImagemX: " << posImagemX << " posImagemY " << posImagemY << "\n";
-
-        _blocos.push_back( Imagem(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), Vector2(posImagemX, posImagemY)) );
+        if(temAnimacao){
+            infoBlocoAnimado infoAnimacaoAtual = tilesAnimados[posAnimacao];
+            Animacao animacaoAtual(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), posImagem, infoAnimacaoAtual.framesAnimacao.size(), infoAnimacaoAtual.duracao);
+            _blocosAnimados.push_back(animacaoAtual);
+        }
+        else{
+            _blocos.push_back( Imagem(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), posImagem) );
+        }
     }
 
    //std::cout << imagemMapa << "\n";
    //SDL_RenderCopy(tela.getRenderer(), tex, NULL, NULL);
    //tela.apresentar();
    //SDL_Delay(1000);
+}
+
+void Mapa::atualizar(int tempoDecorrido){
+    for(int i=0; i<_blocosAnimados.size(); i++){
+        _blocosAnimados[i].atualizar(tempoDecorrido);
+    }
 }
 
 void Mapa::mostrar(Tela& tela){
@@ -128,6 +171,10 @@ void Mapa::mostrar(Tela& tela){
         for(int i=0; i<_colisoes.size(); i++){
             _colisoes[i].exibirRetangulo(tela);    
         }
+    }
+
+    for(int i=0; i<_blocosAnimados.size(); i++){
+        _blocosAnimados[i].mostrar(tela);
     }
 }
 
@@ -186,4 +233,11 @@ void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& Gid
     // for(int i=0; i<GidPosicao.size(); i++){
     //     std::cout << GidPosicao[i].x << " " << GidPosicao[i].y << "\n";
     // }
+}
+
+Vector2 calcularGidRelativo(int gidAtual, int firstgid, int larguraTextura, int larguraBloco, int alturaBloco){
+    int posImagemX = (gidAtual - firstgid) % larguraTextura * larguraBloco;
+    int posImagemY = (gidAtual - firstgid) / larguraTextura * alturaBloco;
+
+    return Vector2(posImagemX, posImagemY);
 }

@@ -61,6 +61,16 @@ void Player::executarControles(Input &input){
     }
     if(input.foiPressionada(SDL_SCANCODE_G)){
         exibirColisoes = !exibirColisoes;
+        printf("exibirColisoes: %d\n", exibirColisoes);
+    }
+
+    if(input.foiPressionada(SDL_SCANCODE_MINUS)){
+        aumentarSprite++;
+    }
+    if(input.foiPressionada(SDL_SCANCODE_EQUALS)){
+        if(aumentarSprite>1){
+            aumentarSprite--;
+        }
     }
 
     if(input.estaPressionada(SDL_SCANCODE_A)==false && input.estaPressionada(SDL_SCANCODE_D)==false){

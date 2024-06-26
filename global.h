@@ -2,12 +2,10 @@
 
 // Por algum motivo essas variaveis estao sendo declaradas multiplas vezes mesmo com pragma once
 // o namespace previne que isso aconteca
-namespace{
-    bool mostrarDebug=false;
-    bool exibirColisoes=false;
-    int aumentarSprite=1;
-    const int FPS = 50;
-}
+extern bool mostrarDebug;
+extern bool exibirColisoes;
+extern int aumentarSprite;
+extern const int FPS;
 
 enum Direcao{
     DIREITA, ESQUERDA, CIMA, BAIXO, NENHUMA

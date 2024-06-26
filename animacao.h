@@ -18,4 +18,5 @@ class Animacao : public Imagem{
         int _duracao;
         int _numeroFrames;
         int _indice;
+        int _totalTempo;
 };
