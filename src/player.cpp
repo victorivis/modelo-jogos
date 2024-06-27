@@ -10,7 +10,7 @@ namespace constantesPlayer{
 
 //Por algum motivo eh impossivel selecionar a animacao no construtor
 Player::Player(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
-    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA){
+    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA), _spawnpoint(posTela){
 
     adicionarAnimacao("idleEsquerda", infoAnimacao(Vector2(0, 0), 100, 1));
     adicionarAnimacao("idleDireita", infoAnimacao(Vector2(0, 16), 100, 1));
@@ -62,6 +62,10 @@ void Player::executarControles(Input &input){
     if(input.foiPressionada(SDL_SCANCODE_G)){
         exibirColisoes = !exibirColisoes;
         printf("exibirColisoes: %d\n", exibirColisoes);
+    }
+    if(input.foiPressionada(SDL_SCANCODE_R)){
+        setX(_spawnpoint.x);
+        setY(_spawnpoint.y);
     }
 
     if(input.foiPressionada(SDL_SCANCODE_MINUS)){

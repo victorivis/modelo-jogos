@@ -13,6 +13,19 @@ Jogo::~Jogo(){
 
 }
 
+void medirFPS(int& tempoDecorrido){
+    static int tempoAquiDentro=0;
+    static int framesAtuais=0;
+    
+    framesAtuais++;
+    tempoAquiDentro+=tempoDecorrido;
+    if(tempoAquiDentro >= 1000){
+        printf("FPS: %d\n", framesAtuais);
+        tempoAquiDentro -= 1000;
+        framesAtuais=0;
+    }
+}
+
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
@@ -24,8 +37,8 @@ int Jogo::loopPrincipal(){
     SDL_Texture* alface = tela.carregarTextura("assets/sprites/alface.png");
     player = Player(alface, Vector2(16, 16), Vector2(300, 300), Vector2(0, 0));
 
-    int tempoInicial = SDL_GetTicks();
     int deltaT = 1000 / FPS;
+    int tempoInicial = SDL_GetTicks();
     while(rodarLoop){
 
         input.resetar();
@@ -55,6 +68,7 @@ int Jogo::loopPrincipal(){
         }
 
         atualizar(delta);
+        medirFPS(delta);
         desenhar(tela);
 
         tempoInicial = tempoAtual;
