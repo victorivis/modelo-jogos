@@ -23,4 +23,5 @@ class Tela{
 
         SDL_Window* _janela;
         SDL_Renderer* _render;
+        SDL_Cursor* _cursor;
 };

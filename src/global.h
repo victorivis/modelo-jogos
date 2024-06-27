@@ -6,6 +6,7 @@ extern bool mostrarDebug;
 extern bool exibirColisoes;
 extern int aumentarSprite;
 extern const int FPS;
+extern const int deltaT;
 
 enum Direcao{
     DIREITA, ESQUERDA, CIMA, BAIXO, NENHUMA

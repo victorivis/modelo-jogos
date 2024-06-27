@@ -2,6 +2,7 @@
 #include "tela.h"
 #include "player.h"
 #include "mapa.h"
+#include "projetil.h"
 
 class Jogo{
     public:
@@ -15,4 +16,6 @@ class Jogo{
     private:
         Mapa _mapa;
         Player player;
+        std::vector<Projetil> _projeteis;
+        int _indice;
 };

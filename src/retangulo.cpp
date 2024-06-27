@@ -55,6 +55,13 @@ int Retangulo::getAltura(){
     return _altura;
 }
 
+int Retangulo::getCentroX(){
+    return _x + _largura/2;
+}
+int Retangulo::getCentroY(){
+    return _y + _altura/2;
+}
+
 void Retangulo::setX(int num){
     _x = num;
 }

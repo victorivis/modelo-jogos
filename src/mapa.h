@@ -39,10 +39,13 @@ class Mapa{
         void lidarColisao(Player& player);
         void atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
+        void recarregar(Tela& tela, std::string caminhoParaMapa);
+
+    public:
+        std::vector<Retangulo> _colisoes;
 
     public:
         std::vector<infoBloco> _infoBlocos;
         std::vector<Imagem> _blocos;
-        std::vector<Animacao> _blocosAnimados;
-        std::vector<Retangulo> _colisoes;
+        std::vector<Animacao> _blocosAnimados;        
 };

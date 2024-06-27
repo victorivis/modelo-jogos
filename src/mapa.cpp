@@ -205,6 +205,15 @@ void Mapa::lidarColisao(Player& player){
     }
 }
 
+void Mapa::recarregar(Tela& tela, std::string caminhoParaMapa){
+    _infoBlocos.clear();
+    _blocos.clear();
+    _blocosAnimados.clear();
+    _colisoes.clear();
+
+    carregarMapa(tela, caminhoParaMapa);
+}
+
 //Recebe o valor do gid e a posicao dele no array
 void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& GidPosicao){    
     int i=0;

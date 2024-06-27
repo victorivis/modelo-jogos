@@ -1,3 +1,4 @@
+#pragma once
 #include "imagem.h"
 #include "retangulo.h"
 #include <map>
@@ -12,6 +13,7 @@ struct infoAnimacao{
     infoAnimacao(Vector2 frameInicial, int duracao, int numeroFrames):
         _frameInicial(frameInicial), _duracao(duracao), _numeroFrames(numeroFrames){}
 };
+
 
 class Entidade : public Imagem{
     public:

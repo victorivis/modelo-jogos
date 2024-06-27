@@ -18,6 +18,8 @@ class Retangulo{
     int getBaixo();
     int getLargura();
     int getAltura();
+    int getCentroX();
+    int getCentroY();
 
     void setX(int num);
     void setY(int num);

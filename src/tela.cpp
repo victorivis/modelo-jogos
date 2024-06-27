@@ -10,14 +10,21 @@ namespace definicoesJanela{
     const Uint32 flags = SDL_WINDOW_RESIZABLE;
 };
 
+namespace definicoesRenderer{
+    const Uint32 flags = SDL_RENDERER_ACCELERATED;
+};
+
 Tela::Tela(){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
         definicoesJanela::comprimento, definicoesJanela::altura, definicoesJanela::flags);
-    _render = SDL_CreateRenderer(_janela, -1, 0);
+    _render = SDL_CreateRenderer(_janela, -1, definicoesRenderer::flags);
 
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
+
+    _cursor = SDL_CreateColorCursor(carregarSuperficie("assets/sprites/cursor.png"), 0, 0);
+    SDL_SetCursor(_cursor);
 }
 
 Tela::~Tela(){
@@ -33,6 +40,7 @@ Tela::~Tela(){
 
     SDL_DestroyWindow(_janela);
     SDL_DestroyRenderer(_render);
+    SDL_FreeCursor(_cursor);
 
     IMG_Quit();
     SDL_Quit();
