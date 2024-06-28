@@ -51,19 +51,6 @@ void Entidade::selecionarAnimacao(std::string nome){
     }
 }
 
-infoAnimacao* Entidade::getAnimacao(std::string nome){
-    return &_animacoes[nome];
-}
-
-infoAnimacao* Entidade::getPrimeiraAnimacao(){
-    if(_animacoes.begin()++ != _animacoes.end()){
-        return &(_animacoes.begin()++)->second;
-    }
-    else{
-        return nullptr;
-    }
-}
-
 Retangulo Entidade::getCaixaColisao(){
     return _caixaColisao;
 }

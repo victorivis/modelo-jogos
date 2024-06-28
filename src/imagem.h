@@ -12,6 +12,7 @@ class Imagem{
         ~Imagem(){}
 
         void mostrar(Tela &tela);
+        void mostrar(Tela &tela, float angulo);
         
         void setX(int num);
         void setY(int num);

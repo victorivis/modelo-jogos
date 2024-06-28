@@ -2,6 +2,6 @@
 
 bool mostrarDebug=false;
 bool exibirColisoes=false;
-int aumentarSprite=1;
+float aumentarSprite=1.5f;
 const int FPS = 50;
 int const deltaT = 1000 / FPS;

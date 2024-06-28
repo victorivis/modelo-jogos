@@ -25,10 +25,6 @@ class Entidade : public Imagem{
         void selecionarAnimacao(std::string nome);
 
         void atualizar(int tempoDecorrido);
-
-        //isso eh uma gambiarra porque nao eh possivel selecionar a animacao no construtor
-        infoAnimacao* getAnimacao(std::string nome);
-        infoAnimacao* getPrimeiraAnimacao();
         Retangulo getCaixaColisao();
         //utiliza o void mostrar() de Imagem
     protected:

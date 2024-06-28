@@ -3,6 +3,7 @@
 #include "input.h"
 #include "mapa.h"
 
+#include <cmath>
 #include <iostream>
 
 Jogo::Jogo(){
@@ -13,14 +14,16 @@ Jogo::~Jogo(){
 
 }
 
-void medirFPS(int& tempoDecorrido){
+void medirFPS(int& tempoDecorrido, Tela& tela){
     static int tempoAquiDentro=0;
     static int framesAtuais=0;
     
     framesAtuais++;
     tempoAquiDentro+=tempoDecorrido;
     if(tempoAquiDentro >= 1000){
-        printf("FPS: %d\n", framesAtuais);
+        char nomeAplicativo[100];
+        sprintf(nomeAplicativo, "FPS: %d", framesAtuais);
+        SDL_SetWindowTitle(tela.getWindow(), nomeAplicativo);
         tempoAquiDentro -= 1000;
         framesAtuais=0;
     }
@@ -38,7 +41,7 @@ int Jogo::loopPrincipal(){
     player = Player(alface, Vector2(16, 16), Vector2(300, 300), Vector2(0, 0));
     int tempoInicial = SDL_GetTicks();
     _indice = 0;
-    _projeteis = std::vector<Projetil>(6);
+    _projeteis = std::vector<Projetil>(8);
 
     while(rodarLoop){
 
@@ -59,20 +62,19 @@ int Jogo::loopPrincipal(){
                     Retangulo colisaoPlayer = player.getCaixaColisao();
                     Vector2 centroPlayer(colisaoPlayer.getCentroX(), colisaoPlayer.getCentroY());
 
-                    float deltaX = (mouseX - centroPlayer.x);
-                    float deltaY = (mouseY - centroPlayer.y);
+                    float deltaX = mouseX - centroPlayer.x;
+                    float deltaY = mouseY - centroPlayer.y;
 
-                    if(deltaX == 0){
-                        deltaX = 0.1;
+                    float hipotenusa = sqrt(deltaX * deltaX + deltaY * deltaY);
+                    if(hipotenusa == 0){
+                        hipotenusa = 1;
                     }
 
-                    int velocidade = deltaX > 0 ? 1 : -1;
+                    int velocidade = 2;
+                    float seno = deltaY/hipotenusa;
+                    float cosseno = deltaX/hipotenusa;
 
-                    float angulo = deltaY/deltaX;
-
-                    std::cout << "Delta: " << deltaX << " " << deltaY << " angulo: " << angulo << "\n";
-
-                    _projeteis[_indice] = Projetil(tela.carregarTextura("assets/sprites/bala.png"), Vector2(8, 8), centroPlayer, Vector2(0, 0), angulo, velocidade);
+                    _projeteis[_indice] = Projetil(tela.carregarTextura("assets/sprites/bala.png"), Vector2(8, 8), centroPlayer, Vector2(0, 0), seno, cosseno, velocidade);
                     _indice = (_indice + 1) % _projeteis.size();
                 }
 
@@ -110,7 +112,7 @@ int Jogo::loopPrincipal(){
         }
 
         atualizar(delta);
-        medirFPS(delta);
+        medirFPS(delta, tela);
         desenhar(tela);
 
         tempoInicial = tempoAtual;

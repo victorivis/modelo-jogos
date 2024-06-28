@@ -75,3 +75,7 @@ void Tela::apresentar(){
 SDL_Renderer* Tela::getRenderer(){
     return _render;
 }
+
+SDL_Window* Tela::getWindow(){
+    return _janela;
+}

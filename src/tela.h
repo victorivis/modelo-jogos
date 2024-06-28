@@ -16,6 +16,7 @@ class Tela{
         void apresentar();
 
         SDL_Renderer* getRenderer();
+        SDL_Window* getWindow();
 
     private:
         std::map<std::string, SDL_Surface*> _todasAsSuperficies;

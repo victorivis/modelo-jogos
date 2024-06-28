@@ -4,7 +4,7 @@
 // o namespace previne que isso aconteca
 extern bool mostrarDebug;
 extern bool exibirColisoes;
-extern int aumentarSprite;
+extern float aumentarSprite;
 extern const int FPS;
 extern const int deltaT;
 
