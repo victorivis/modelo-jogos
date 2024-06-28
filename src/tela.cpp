@@ -3,8 +3,8 @@
 #include <iostream>
 
 namespace definicoesJanela{
-    const int comprimento= 720;
-    const int altura = 480;
+    const int comprimento= 1080;
+    const int altura = 720;
     const int posX = SDL_WINDOWPOS_CENTERED;
     const int posY = SDL_WINDOWPOS_CENTERED;
     const Uint32 flags = SDL_WINDOW_RESIZABLE;

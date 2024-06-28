@@ -142,7 +142,12 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
         if(temAnimacao){
             infoBlocoAnimado infoAnimacaoAtual = tilesAnimados[posAnimacao];
-            Animacao animacaoAtual(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), posImagem, infoAnimacaoAtual.framesAnimacao.size(), infoAnimacaoAtual.duracao);
+            std::vector<Vector2> frames;
+            for(int i=0; i<infoAnimacaoAtual.framesAnimacao.size(); i++){
+                frames.push_back(calcularGidRelativo(infoAnimacaoAtual.framesAnimacao[i]+blocoAtual.gid, blocoAtual.gid, larguraTextura, larguraBloco, alturaBloco));
+            }
+
+            Animacao animacaoAtual(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), posImagem, frames, infoAnimacaoAtual.duracao);
             _blocosAnimados.push_back(animacaoAtual);
         }
         else{
