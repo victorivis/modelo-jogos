@@ -100,3 +100,7 @@ void Player::atualizar(int tempoDecorrido){
 void Player::mostrar(Tela &tela){
     Entidade::mostrar(tela);
 }
+
+int Player::getAltura(){
+    return _tamanho.y * aumentarSprite;
+}

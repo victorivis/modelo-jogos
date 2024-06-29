@@ -6,9 +6,11 @@
 #include "retangulo.h"
 #include "animacao.h"
 #include "player.h"
+#include "inclinacao.h"
 
 void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& GidPosicao);
 Vector2 calcularGidRelativo(int gidAtual, int firstgid, int larguraTextura, int larguraBloco, int alturaBloco);
+std::vector<std::string> split(const char* minhaString, char charDividir);
 
 struct infoBloco{
     infoBloco(){}
@@ -45,6 +47,7 @@ class Mapa{
         std::vector<Retangulo> _colisoes;
 
     public:
+        std::vector<Inclinacao> _ladeiras;
         std::vector<infoBloco> _infoBlocos;
         std::vector<Imagem> _blocos;
         std::vector<Animacao> _blocosAnimados;        

@@ -2,6 +2,7 @@
 #include <cstring>
 #include <tinyxml2.h>
 #include <cmath>
+#include <string>
 
 #include "mapa.h"
 
@@ -31,6 +32,32 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
                 _colisoes.push_back(Retangulo(x * aumentarSprite, y * aumentarSprite, largura * aumentarSprite, altura * aumentarSprite));
 
                 pBlocoColisao = pBlocoColisao->NextSiblingElement("object");
+            }
+        }
+        else if(pOjectGroup->Attribute("name") == std::string("ladeiras")){
+            tinyxml2::XMLElement* pLadeira = pOjectGroup->FirstChildElement("object");
+            while(pLadeira){
+                int x = pLadeira->IntAttribute("x");
+                int y = pLadeira->IntAttribute("y");
+                //std:: cout << "x: " << x << " y: " << y << "\n";
+
+                tinyxml2::XMLElement* pPolyline = pLadeira->FirstChildElement("polyline");
+
+                const char* texto = pPolyline->Attribute("points");
+                //std::cout << "texto: " << texto << "\n";
+                std::vector<std::string> pontos = split(texto, ' ');
+                //printf("pontos: %s %s\n", pontos[0].c_str(), pontos[1].c_str());
+
+                std::vector<std::string> ponto2 = split(pontos[1].c_str(), ',');
+
+                Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
+                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
+                
+                printf("p1(%d, %d), p2(%d, %d)\n", p1.x, p1.y, p2.x, p2.y);
+
+                _ladeiras.push_back(Inclinacao(p1, p2));
+
+                pLadeira = pLadeira->NextSiblingElement("object");
             }
         }
         
@@ -118,7 +145,6 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
         for(int i=0; i<tilesAnimados.size(); i++){
             if(tilesAnimados[i].gidAbsoluto() == gidAtual){
-                printf("He he he, existe animacao %d\n", gidAtual);
                 temAnimacao = true;
                 posAnimacao = i;
                 break;
@@ -154,11 +180,6 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             _blocos.push_back( Imagem(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), posImagem) );
         }
     }
-
-   //std::cout << imagemMapa << "\n";
-   //SDL_RenderCopy(tela.getRenderer(), tex, NULL, NULL);
-   //tela.apresentar();
-   //SDL_Delay(1000);
 }
 
 void Mapa::atualizar(int tempoDecorrido){
@@ -175,6 +196,9 @@ void Mapa::mostrar(Tela& tela){
     if(exibirColisoes){
         for(int i=0; i<_colisoes.size(); i++){
             _colisoes[i].exibirRetangulo(tela);    
+        }
+        for(int i=0; i<_ladeiras.size(); i++){
+            _ladeiras[i].mostrar(tela);
         }
     }
 
@@ -208,6 +232,10 @@ void Mapa::lidarColisao(Player& player){
             }
         } 
     }
+
+    for(int i=0; i<_ladeiras.size(); i++){
+        _ladeiras[i].lidarColisao(player);
+    }
 }
 
 void Mapa::recarregar(Tela& tela, std::string caminhoParaMapa){
@@ -223,8 +251,8 @@ void Mapa::recarregar(Tela& tela, std::string caminhoParaMapa){
 void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& GidPosicao){    
     int i=0;
     int inicio=0;
-
     int posicao=0;
+
     do{
         if((minhaString[i] == charDividir || minhaString[i] == '\0') && inicio!=i){
             int atual = i;
@@ -247,6 +275,29 @@ void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& Gid
     // for(int i=0; i<GidPosicao.size(); i++){
     //     std::cout << GidPosicao[i].x << " " << GidPosicao[i].y << "\n";
     // }
+}
+
+std::vector<std::string> split(const char* minhaString, char charDividir){
+    std::vector<std::string> saida;
+    int i=0;
+    int inicio=0;
+
+    if(minhaString[0] == '\0'){
+        printf("String vazia enviada para split\n");
+        return saida;
+    }
+
+    do{
+        if((minhaString[i] == charDividir || minhaString[i] == '\0') && inicio!=i){
+            int atual = i;
+            char subString[atual - inicio + 1];
+            strncpy(subString, &minhaString[inicio], atual-inicio);
+            subString[atual-inicio] = '\0';
+            saida.push_back(std::string(subString));
+            inicio = atual+1;
+        }
+    }while(minhaString[i++]!='\0');
+    return saida;
 }
 
 Vector2 calcularGidRelativo(int gidAtual, int firstgid, int larguraTextura, int larguraBloco, int alturaBloco){

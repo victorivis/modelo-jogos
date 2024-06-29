@@ -14,6 +14,7 @@ class Player : public Entidade{
 
         void atualizar(int tempoDecorrido);
         void mostrar(Tela &tela);
+        int getAltura();
     private:
         Vector2 _spawnpoint;
         Direcao _olhando;
