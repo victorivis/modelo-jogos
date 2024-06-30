@@ -46,45 +46,46 @@ void Player::mover(Direcao direcao){
     }
 }
 
+void Player::adicionarControles(std::vector<SDL_Scancode> controles){
+    _controles = controles;
+}
+
 void Player::executarControles(Input &input){
-    if(input.estaPressionada(SDL_SCANCODE_W)){
+    if(input.estaPressionada(_controles[0])){
+        printf("cima\n");
         mover(CIMA);
     }
-    if(input.estaPressionada(SDL_SCANCODE_S)){
+    if(input.estaPressionada(_controles[1])){
         mover(BAIXO);
+        printf("baixo\n");
     }
-    if(input.estaPressionada(SDL_SCANCODE_A)){
+    if(input.estaPressionada(_controles[2])){
         mover(ESQUERDA);
     }
-    if(input.estaPressionada(SDL_SCANCODE_D)){
+    if(input.estaPressionada(_controles[3])){
         mover(DIREITA);
     }
-    if(input.foiPressionada(SDL_SCANCODE_G)){
-        exibirColisoes = !exibirColisoes;
-        printf("exibirColisoes: %d\n", exibirColisoes);
-    }
-    if(input.foiPressionada(SDL_SCANCODE_R)){
+    if(input.foiPressionada(_controles[4])){
         setX(_spawnpoint.x);
         setY(_spawnpoint.y);
     }
-
-    if(input.foiPressionada(SDL_SCANCODE_MINUS)){
-        aumentarSprite++;
-    }
-    if(input.foiPressionada(SDL_SCANCODE_EQUALS)){
-        if(aumentarSprite>1){
-            aumentarSprite--;
-        }
-    }
-
-    if(input.estaPressionada(SDL_SCANCODE_A)==false && input.estaPressionada(SDL_SCANCODE_D)==false){
+    
+    if(input.estaPressionada(_controles[2])==false && input.estaPressionada(_controles[3])==false){
         _dx *= constantesPlayer::atrito;
         _olhando == DIREITA ? selecionarAnimacao("idleDireita") : selecionarAnimacao("idleEsquerda");
     }
 
-    if(input.estaPressionada(SDL_SCANCODE_W)==false && input.estaPressionada(SDL_SCANCODE_S)==false){
+    if(input.estaPressionada(_controles[0])==false && input.estaPressionada(_controles[1])==false){
         _dy *= constantesPlayer::atrito;
     }
+}
+
+void Player::aplicarForcaX(float intensidade){
+    _dx += intensidade;
+}
+
+void Player::aplicarForcaY(float intensidade){
+    _dy += intensidade;
 }
 
 void Player::atualizar(int tempoDecorrido){

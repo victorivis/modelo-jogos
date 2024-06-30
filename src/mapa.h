@@ -42,13 +42,15 @@ class Mapa{
         void atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
         void recarregar(Tela& tela, std::string caminhoParaMapa);
+        std::vector<Retangulo> getColisoes();
+        Vector2 getSpawnpoint();
 
     public:
         std::vector<Retangulo> _colisoes;
 
-    public:
+    private:
+        Vector2 _spawnpoint;
         std::vector<Inclinacao> _ladeiras;
-        std::vector<infoBloco> _infoBlocos;
         std::vector<Imagem> _blocos;
         std::vector<Animacao> _blocosAnimados;        
 };

@@ -47,3 +47,15 @@ void Projetil::lidarColisao(Retangulo& colidido){
         }
     }
 }
+
+void Projetil::lidarColisao(Player& player){
+    if(_inativo==false){
+        Retangulo caixaPlayer = player.getCaixaColisao();
+        if(getCaixaColisao().colisaoAABB(caixaPlayer)){
+            player.aplicarForcaX(_velocidade * _cosseno);
+            player.aplicarForcaY(_velocidade * _seno);
+
+            _inativo = true;
+        }
+    }
+}

@@ -60,6 +60,11 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
                 pLadeira = pLadeira->NextSiblingElement("object");
             }
         }
+        else if(pOjectGroup->Attribute("name") == std::string("spawnpoint")){
+            tinyxml2::XMLElement* pObjeto = pOjectGroup->FirstChildElement("object");
+            _spawnpoint.x = aumentarSprite * std::round(pObjeto->FloatAttribute("x"));
+            _spawnpoint.y = aumentarSprite * std::round(pObjeto->FloatAttribute("y"));
+        }
         
 
         pOjectGroup = pOjectGroup->NextSiblingElement("objectgroup");
@@ -67,6 +72,8 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
 
     std::vector<infoBlocoAnimado> tilesAnimados;
+    std::vector<infoBloco> infoBlocos;
+
     //recebendo informacoes do mapa
     tinyxml2::XMLElement* pTileset = pMapa->FirstChildElement("tileset");
     while(pTileset){
@@ -81,7 +88,7 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         //int larguraTextura = pImage->IntAttribute("width")  / larguraBloco;
         //int alturaTextura =  pImage->IntAttribute("height") / alturaBloco;
 
-        _infoBlocos.push_back(infoBloco(tex, gidAtual));
+        infoBlocos.push_back(infoBloco(tex, gidAtual));
 
         //Salvando animacoes
         tinyxml2::XMLElement* pTile = pTileset->FirstChildElement("tile");
@@ -151,9 +158,9 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             }
         }
 
-        for(int i=0; i<_infoBlocos.size(); i++){
-            if(gidAtual >= _infoBlocos[i].gid){
-                blocoAtual = _infoBlocos[i];
+        for(int i=0; i<infoBlocos.size(); i++){
+            if(gidAtual >= infoBlocos[i].gid){
+                blocoAtual = infoBlocos[i];
             }
         }
 
@@ -197,9 +204,9 @@ void Mapa::mostrar(Tela& tela){
         for(int i=0; i<_colisoes.size(); i++){
             _colisoes[i].exibirRetangulo(tela);    
         }
-        for(int i=0; i<_ladeiras.size(); i++){
-            _ladeiras[i].mostrar(tela);
-        }
+    }
+    for(int i=0; i<_ladeiras.size(); i++){
+        _ladeiras[i].mostrar(tela);
     }
 
     for(int i=0; i<_blocosAnimados.size(); i++){
@@ -210,25 +217,20 @@ void Mapa::mostrar(Tela& tela){
 void Mapa::lidarColisao(Player& player){
     for(int i=0; i<_colisoes.size(); i++){
         Retangulo caixaPlayer = player.getCaixaColisao();
-        //caixaPlyer.debugRetangulo();
         Direcao daColisao = _colisoes[i].ladoColisao(caixaPlayer);
 
         if(daColisao != NENHUMA){
             if(daColisao == DIREITA){
                 player.setX(_colisoes[i].getDireita()+1);
-                //std::cout << "Direita\n";
             }
             else if(daColisao == ESQUERDA){
                 player.setX(_colisoes[i].getEsquerda()-caixaPlayer.getLargura()-1);
-                //std::cout << "Esquerda\n";
             }
             else if(daColisao == CIMA){
                 player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura()-1);
-                //std::cout << "Cima\n";
             }
             else if(daColisao == BAIXO){
                 player.setY(_colisoes[i].getBaixo()+1);
-                //std::cout << "Baixo\n";
             }
         } 
     }
@@ -239,12 +241,19 @@ void Mapa::lidarColisao(Player& player){
 }
 
 void Mapa::recarregar(Tela& tela, std::string caminhoParaMapa){
-    _infoBlocos.clear();
     _blocos.clear();
     _blocosAnimados.clear();
     _colisoes.clear();
 
     carregarMapa(tela, caminhoParaMapa);
+}
+
+std::vector<Retangulo> Mapa::getColisoes(){
+    return _colisoes;
+}
+
+Vector2 Mapa::getSpawnpoint(){
+    return _spawnpoint;
 }
 
 //Recebe o valor do gid e a posicao dele no array

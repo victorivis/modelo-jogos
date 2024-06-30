@@ -16,6 +16,7 @@ class Jogo{
     private:
         Mapa _mapa;
         Player player;
+        Player player2;
         std::vector<Projetil> _projeteis;
         int _indice;
 };

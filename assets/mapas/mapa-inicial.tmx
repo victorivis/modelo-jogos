@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="49">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="52">
  <tileset firstgid="1" name="world_tileset" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="../tileset/world_tileset.png" width="256" height="256"/>
   <tile id="20">
@@ -115,11 +115,13 @@
   <object id="44" x="310" y="149.333">
    <polyline points="0,0 32,-47.3333"/>
   </object>
-  <object id="46" x="95" y="307.333">
-   <polyline points="0,0 -88,-86.6667"/>
-  </object>
   <object id="48" x="205.875" y="305.75">
-   <polyline points="0,0 -46.5,-67.75"/>
+   <polyline points="0,0 -48.6818,-27.75"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="spawnpoint">
+  <object id="49" x="167.636" y="129.727">
+   <point/>
   </object>
  </objectgroup>
 </map>

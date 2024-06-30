@@ -1,4 +1,5 @@
 #include "entidade.h"
+#include "player.h"
 
 class Projetil : public Entidade{
     public:
@@ -8,6 +9,7 @@ class Projetil : public Entidade{
         void atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
         void lidarColisao(Retangulo& colidido);
+        void lidarColisao(Player& player);
         void desativarProjetil();
         bool estaAtivo();
     private:
