@@ -22,7 +22,7 @@ void medirFPS(int& tempoDecorrido, Tela& tela){
     tempoAquiDentro+=tempoDecorrido;
     if(tempoAquiDentro >= 1000){
         char nomeAplicativo[100];
-        sprintf(nomeAplicativo, "FPS: %d", framesAtuais);
+        sprintf(nomeAplicativo, "Uma simples game engine - FPS: %d", framesAtuais);
         SDL_SetWindowTitle(tela.getWindow(), nomeAplicativo);
         tempoAquiDentro -= 1000;
         framesAtuais=0;
@@ -45,7 +45,7 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
         hipotenusa = 1;
     }
 
-    int velocidade = 20;
+    int velocidade = 10;
     float seno = deltaY/hipotenusa;
     float cosseno = deltaX/hipotenusa;
 
@@ -56,7 +56,7 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
-    _mapa.carregarMapa(tela, "mapa-inicial");
+    _mapa.carregarMapa(tela, "mapa-para-mostrar-que-funciona");
 
     bool rodarLoop=true;
     SDL_Event evento;
@@ -111,6 +111,18 @@ int Jogo::loopPrincipal(){
                 if(aumentarSprite>1){
                     aumentarSprite--;
                 }
+            }
+            if(input.estaPressionada(SDL_SCANCODE_L)){
+                tela.moverCameraX(1);
+            }
+            if(input.estaPressionada(SDL_SCANCODE_J)){
+                tela.moverCameraX(-1);
+            }
+            if(input.estaPressionada(SDL_SCANCODE_I)){
+                tela.moverCameraY(-1);
+            }
+            if(input.estaPressionada(SDL_SCANCODE_K)){
+                tela.moverCameraY(1);
             }
         }
         player.executarControles(input);

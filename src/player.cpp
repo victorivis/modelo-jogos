@@ -3,14 +3,18 @@
 #include "global.h"
 
 namespace constantesPlayer{
-    float moveSpeed = 1.0f;
+    float moveSpeed = 2.0f;
     float moveCap = 4.0f;
-    float atrito = 0.8f;
+    float atrito = 0.90f;
+    float forcaGravidade=0.8f;
+    float limiteGravidade=8.0f;
+    int tempoPulo = 400;
+    float forcaPulo = 12*forcaGravidade;
 };
 
 //Por algum motivo eh impossivel selecionar a animacao no construtor
 Player::Player(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
-    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA), _spawnpoint(posTela){
+    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA), _spawnpoint(posTela), _noChao(false), _tempoPulo(0){
 
     adicionarAnimacao("idleEsquerda", infoAnimacao(Vector2(0, 0), 100, 1));
     adicionarAnimacao("idleDireita", infoAnimacao(Vector2(0, 16), 100, 1));
@@ -36,7 +40,14 @@ void Player::mover(Direcao direcao){
             }
             break;
         case CIMA:
-            if(-_dy < constantesPlayer::moveCap) _dy -= constantesPlayer::moveSpeed;
+            if(-_dy < constantesPlayer::moveCap){
+                if(gravidade){
+                    _dy -= constantesPlayer::forcaPulo * _tempoPulo / constantesPlayer::tempoPulo;
+                }
+                else{
+                    _dy -= constantesPlayer::moveSpeed;
+                }
+            }
             //_olhando = CIMA;
             break;
         case BAIXO:
@@ -52,12 +63,20 @@ void Player::adicionarControles(std::vector<SDL_Scancode> controles){
 
 void Player::executarControles(Input &input){
     if(input.estaPressionada(_controles[0])){
-        printf("cima\n");
-        mover(CIMA);
+        if(gravidade){
+            if(_tempoPulo > 0){
+                mover(CIMA);
+                _noChao = false;
+            }
+        }
+        else{
+            mover(CIMA);
+        }
     }
     if(input.estaPressionada(_controles[1])){
-        mover(BAIXO);
-        printf("baixo\n");
+        if(gravidade == false){
+            mover(BAIXO);
+        }
     }
     if(input.estaPressionada(_controles[2])){
         mover(ESQUERDA);
@@ -76,6 +95,9 @@ void Player::executarControles(Input &input){
     }
 
     if(input.estaPressionada(_controles[0])==false && input.estaPressionada(_controles[1])==false){
+        if(_noChao == false){
+            _tempoPulo = 0;
+        }
         _dy *= constantesPlayer::atrito;
     }
 }
@@ -94,12 +116,26 @@ void Player::atualizar(int tempoDecorrido){
     }
     Entidade::atualizar(tempoDecorrido);
 
+    if(gravidade && _noChao == false && _dy < constantesPlayer::limiteGravidade){
+        _dy += constantesPlayer::forcaGravidade;
+    }
+
+    if(_noChao == false){
+        _tempoPulo -= tempoDecorrido;
+    }
+
     _x += _dx;
     _y += _dy;
 }
 
 void Player::mostrar(Tela &tela){
     Entidade::mostrar(tela);
+}
+
+void Player::tocouChao(){
+    _dy = 0.0f;
+    _noChao = true;
+    _tempoPulo = constantesPlayer::tempoPulo;
 }
 
 int Player::getAltura(){

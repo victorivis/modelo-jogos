@@ -19,12 +19,15 @@ class Player : public Entidade{
 
         void atualizar(int tempoDecorrido);
         void mostrar(Tela &tela);
+        void tocouChao();
         int getAltura();
     private:
+        bool _noChao;
         std::vector<SDL_Scancode> _controles;
         Vector2 _spawnpoint;
         Direcao _olhando;
-        int _dx;
-        int _dy;
+        float _dx;
+        float _dy;
+        int _tempoPulo;
 };
 

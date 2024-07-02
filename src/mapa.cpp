@@ -228,6 +228,7 @@ void Mapa::lidarColisao(Player& player){
             }
             else if(daColisao == CIMA){
                 player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura()-1);
+                player.tocouChao();
             }
             else if(daColisao == BAIXO){
                 player.setY(_colisoes[i].getBaixo()+1);

@@ -12,15 +12,21 @@ class Tela{
         ~Tela();
         SDL_Surface* carregarSuperficie(std::string caminhoParaImagem);
         SDL_Texture* carregarTextura(std::string caminhoParaImagem);
+        SDL_Texture* criarTextura();
         
         void apresentar();
 
         SDL_Renderer* getRenderer();
         SDL_Window* getWindow();
+        void moverCameraX(int X);
+        void moverCameraY(int Y);
 
     private:
         std::map<std::string, SDL_Surface*> _todasAsSuperficies;
         std::map<std::string, SDL_Texture*> _todasAsTexturas;
+
+        SDL_Rect origem;
+        SDL_Rect destino;
 
         SDL_Window* _janela;
         SDL_Renderer* _render;
