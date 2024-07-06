@@ -28,5 +28,11 @@ struct Vector3{
     int z;
 };
 
+struct Linha{
+    Linha(Vector2 inicio, Vector2 fim): p1(inicio), p2(fim){}
+    Vector2 p1;
+    Vector2 p2;
+};
+
 double calcularHipotenusa(Vector2& p1, Vector2& p2);
 void calcularSenoCosseno(Vector2 p1, Vector2 p2, float& seno, float& cosseno);

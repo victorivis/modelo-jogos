@@ -65,7 +65,30 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             _spawnpoint.x = aumentarSprite * std::round(pObjeto->FloatAttribute("x"));
             _spawnpoint.y = aumentarSprite * std::round(pObjeto->FloatAttribute("y"));
         }
-        
+
+        else if(pOjectGroup->Attribute("name") == std::string("morcegos")){
+            tinyxml2::XMLElement* pMorcego = pOjectGroup->FirstChildElement("object");
+            while(pMorcego){
+                int x = pMorcego->IntAttribute("x");
+                int y = pMorcego->IntAttribute("y");
+
+                tinyxml2::XMLElement* pPolyline = pMorcego->FirstChildElement("polyline");
+
+                const char* texto = pPolyline->Attribute("points");
+                std::vector<std::string> pontos = split(texto, ' ');
+
+                std::vector<std::string> ponto2 = split(pontos[1].c_str(), ',');
+
+                Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
+                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
+                
+                printf("p1(%d, %d), p2(%d, %d)\n", p1.x, p1.y, p2.x, p2.y);
+
+                _caminhoMorcegos.push_back(Linha(p1, p2));
+
+                pMorcego = pMorcego->NextSiblingElement("object");
+            }
+        }        
 
         pOjectGroup = pOjectGroup->NextSiblingElement("objectgroup");
     }
@@ -251,6 +274,10 @@ void Mapa::recarregar(Tela& tela, std::string caminhoParaMapa){
 
 std::vector<Retangulo> Mapa::getColisoes(){
     return _colisoes;
+}
+
+std::vector<Linha> Mapa::getMorcegos(){
+    return _caminhoMorcegos;
 }
 
 Vector2 Mapa::getSpawnpoint(){

@@ -67,7 +67,17 @@ int Jogo::loopPrincipal(){
     player = Player(alface, Vector2(16, 16), _mapa.getSpawnpoint(), Vector2(0, 0));
     player2 = Player(knight, Vector2(32, 32), _mapa.getSpawnpoint(), Vector2(0, 0));
 
-    morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(100, 400), Vector2(0, 0), Vector2(600, 100), 10);
+    //O if eh para destruir o vector caminhoMorcegos
+    if(true){
+        std::vector<Linha> caminhoMorcegos = _mapa.getMorcegos();
+        int velocidadeMorcegos = 4;
+
+        for(int i=0; i<caminhoMorcegos.size(); i++){
+            morcegos.push_back(Morcego(spriteMorcego, Vector2(16, 24), caminhoMorcegos[i].p1, Vector2(0, 0), caminhoMorcegos[i].p2, velocidadeMorcegos));
+        }
+    }
+
+    //morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(100, 400), Vector2(0, 0), Vector2(600, 100), 10);
 
     player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R});
     player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
@@ -152,7 +162,11 @@ int Jogo::loopPrincipal(){
 void Jogo::atualizar(int tempo){
     player.atualizar(tempo);
     player2.atualizar(tempo);
-    morcego.atualizar(tempo);
+    
+    for(int i=0; i<morcegos.size(); i++){
+        morcegos[i].atualizar(tempo);
+    }
+
     _mapa.atualizar(tempo);
     _mapa.lidarColisao(player);
     _mapa.lidarColisao(player2);
@@ -182,7 +196,11 @@ void Jogo::desenhar(Tela &tela){
     _mapa.mostrar(tela);
     player.mostrar(tela);
     player2.mostrar(tela);
-    morcego.mostrar(tela);
+
+    for(int i=0; i<morcegos.size(); i++){
+        morcegos[i].mostrar(tela);
+    }
+
     tela.apresentar();
 
     for(int i=0; i<_projeteis.size(); i++){

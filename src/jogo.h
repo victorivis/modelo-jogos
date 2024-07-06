@@ -20,5 +20,5 @@ class Jogo{
         Player player2;
         std::vector<Projetil> _projeteis;
         int _indice;
-        Morcego morcego;
+        std::vector<Morcego> morcegos;
 };

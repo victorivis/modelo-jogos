@@ -43,6 +43,7 @@ class Mapa{
         void mostrar(Tela& tela);
         void recarregar(Tela& tela, std::string caminhoParaMapa);
         std::vector<Retangulo> getColisoes();
+        std::vector<Linha> getMorcegos();
         Vector2 getSpawnpoint();
 
     public:
@@ -52,5 +53,6 @@ class Mapa{
         Vector2 _spawnpoint;
         std::vector<Inclinacao> _ladeiras;
         std::vector<Imagem> _blocos;
-        std::vector<Animacao> _blocosAnimados;        
+        std::vector<Animacao> _blocosAnimados;  
+        std::vector<Linha> _caminhoMorcegos;      
 };
