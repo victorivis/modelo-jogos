@@ -13,10 +13,9 @@ bool Entidade::atualizar(int tempoDecorrido){
     
     if(_tempoDecorridoFrame <= 0){
         foiAtualizado = true;
-        int temp = _animacaoAtual->_duracao;
-        _tempoDecorridoFrame += temp;
+        _tempoDecorridoFrame += _animacaoAtual->_duracao;
 
-        _indice = (_indice+1)%_animacaoAtual->_numeroFrames;
+        _indice = (_indice+1) % (_animacaoAtual->_numeroFrames);
         _posImagem.x = _tamanho.x * _indice + _animacaoAtual->_frameInicial.x;
 
         if(mostrarDebug){

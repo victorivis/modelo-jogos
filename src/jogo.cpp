@@ -56,7 +56,7 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
-    _mapa.carregarMapa(tela, "mapa-inicial");
+    _mapa.carregarMapa(tela, "teste-morcego");
 
     bool rodarLoop=true;
     SDL_Event evento;
@@ -66,8 +66,8 @@ int Jogo::loopPrincipal(){
     SDL_Texture* spriteMorcego = tela.carregarTextura("assets/sprites/morcego.png");
     player = Player(alface, Vector2(16, 16), _mapa.getSpawnpoint(), Vector2(0, 0));
     player2 = Player(knight, Vector2(32, 32), _mapa.getSpawnpoint(), Vector2(0, 0));
-    morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(500, 500), Vector2(0, 0), Vector2(600, 100), 1);
-    //morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(900, 800), Vector2(0, 0), Vector2(500, 500), 1);
+
+    morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(100, 400), Vector2(0, 0), Vector2(600, 100), 10);
 
     player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R});
     player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});

@@ -16,9 +16,11 @@ double calcularHipotenusa(Vector2& p1, Vector2& p2){
 }
 void calcularSenoCosseno(Vector2 p1, Vector2 p2, float& seno, float& cosseno){
     double hipotenusa = calcularHipotenusa(p1, p2);
+
+    //Considera p1 como origem e p2 como destino
     if(hipotenusa != 0){
-        seno = (p1.y - p2.y) / hipotenusa;
-        cosseno = (p1.x - p2.x) / hipotenusa; 
+        seno = (p2.y - p1.y) / hipotenusa;
+        cosseno = (p2.x - p1.x) / hipotenusa; 
     }
     else{
         seno = 0;

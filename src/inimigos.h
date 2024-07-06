@@ -7,6 +7,7 @@ class Morcego : public Entidade{
         ~Morcego();
         Morcego(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem, Vector2 trajetoFim, int velocidade);
         void atualizar(int tempoDecorrido);
+        void mostrar(Tela& tela);
     
     private:
         Vector2 _trajetoInicio;

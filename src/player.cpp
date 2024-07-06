@@ -87,6 +87,7 @@ void Player::executarControles(Input &input){
     if(input.foiPressionada(_controles[4])){
         setX(_spawnpoint.x);
         setY(_spawnpoint.y);
+        caiu();
     }
     
     if(input.estaPressionada(_controles[2])==false && input.estaPressionada(_controles[3])==false){

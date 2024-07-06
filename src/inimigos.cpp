@@ -5,65 +5,53 @@
 Morcego::Morcego(){}
 Morcego::~Morcego(){}
 Morcego::Morcego(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem, Vector2 trajetoFim, int velocidade): 
-    _trajetoFim(trajetoFim), _velocidade(velocidade), _trajetoInicio(posTela), Entidade(construtorMorcego){
-        adicionarAnimacao("idle", infoAnimacao(Vector2(0, 0), 200, 5));
-        selecionarAnimacao("idle");
-
+    _trajetoFim(trajetoFim), _velocidade(velocidade), _trajetoInicio(posTela), sentido(true), Entidade(tex, tamanho, posTela, posImagem){
         calcularSenoCosseno(posTela, trajetoFim, _seno, _cosseno);
     }
 
 void Morcego::atualizar(int tempoDecorrido){
-    Entidade::atualizar(tempoDecorrido);
-    
-    if(sentido){
-        _x += _velocidade * _cosseno;
-        _y += _velocidade * _seno;
-    }
-    else{
-        _x -= _velocidade * _cosseno;
-        _y -= _velocidade * _seno;
+    if(_animacaoAtual == nullptr){
+        adicionarAnimacao("morcego", infoAnimacao(Vector2(0, 24), 60, 4));
+        selecionarAnimacao("morcego");
     }
 
-    if(_x < _trajetoFim.x){
-        _x = _trajetoInicio.x;
-        _y = _trajetoInicio.y;
-    }
-
-    //if(sentido){
-    //    if(_cosseno > 0 ? _x < _trajetoFim.x : _x > _trajetoFim.x){
-    //        sentido = false;
-    //    }            
-    //}
-    //else if((_cosseno < 0 ? _x <= _trajetoInicio.x : _x >= _trajetoInicio.x)  ){
-    //    sentido = true;
-    //}
-
-        /*
+    if(Entidade::atualizar(tempoDecorrido)){
         if(sentido){
-            if(_cosseno < 0 ? _x < _trajetoFim.x : _x > _trajetoFim.x){
-                sentido = false;
-            }            
+            if(_cosseno==0){
+                if(_seno > 0 ? _y > _trajetoFim.y : _y < _trajetoFim.y){
+                    sentido = false;
+                }
+            }
+            else{
+                if(_cosseno > 0 ? _x > _trajetoFim.x : _x < _trajetoFim.x){
+                    sentido = false;
+                }
+            }
         }
-        else if((_cosseno < 0 ? _x <= _trajetoInicio.x : _x >= _trajetoInicio.x)  ){
-            sentido = true;
+        else{
+            if(_cosseno==0){
+                if(_seno > 0 ? _y < _trajetoInicio.y : _y > _trajetoInicio.y){
+                    sentido = true;
+                }
+            }
+            else{
+                if(_cosseno > 0 ? _x < _trajetoInicio.x : _x > _trajetoInicio.x){
+                    sentido = true;
+                }
+            }
         }
-        */
-
-    /*
-    if((_x <= _trajetoFim.x && _x >= _trajetoInicio.x)){
-        _x = _trajetoInicio.x;
-        _y = _trajetoInicio.y;
-    }
-    */
-
-        /*
+        
         if(sentido){
-            if(_x < _trajetoFim.x){
-                sentido = false;
-            }            
+            _x += _velocidade * _cosseno;
+            _y += _velocidade * _seno;
         }
-        else if(_x <= _trajetoInicio.x){
-            sentido = true;
+        else{
+            _x -= _velocidade * _cosseno;
+            _y -= _velocidade * _seno;
         }
-        */
+    }
+}
+
+void Morcego::mostrar(Tela& tela){
+    Imagem::mostrar(tela);
 }
