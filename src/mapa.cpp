@@ -233,7 +233,7 @@ void Mapa::lidarColisao(Player& player){
             else if(daColisao == BAIXO){
                 player.setY(_colisoes[i].getBaixo()+1);
             }
-        } 
+        }
     }
 
     for(int i=0; i<_ladeiras.size(); i++){

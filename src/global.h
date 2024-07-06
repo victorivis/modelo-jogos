@@ -1,7 +1,5 @@
 #pragma once
 
-// Por algum motivo essas variaveis estao sendo declaradas multiplas vezes mesmo com pragma once
-// o namespace previne que isso aconteca
 extern bool mostrarDebug;
 extern bool exibirColisoes;
 extern float aumentarSprite;
@@ -29,3 +27,6 @@ struct Vector3{
     int y;
     int z;
 };
+
+double calcularHipotenusa(Vector2& p1, Vector2& p2);
+void calcularSenoCosseno(Vector2 p1, Vector2 p2, float& seno, float& cosseno);

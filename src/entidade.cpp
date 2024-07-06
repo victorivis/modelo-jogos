@@ -2,18 +2,19 @@
 #include <iostream>
 
 Entidade::Entidade(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
-    : Imagem(tex, tamanho, posTela, posImagem), _indice(-1), _animacaoAtual(nullptr) {}
+    : Imagem(tex, tamanho, posTela, posImagem), _indice(-1), _animacaoAtual(nullptr), _tempoDecorridoFrame(0){}
 
-void Entidade::atualizar(int tempoDecorrido){
-    static int tempo = 0;
+bool Entidade::atualizar(int tempoDecorrido){
+    bool foiAtualizado=false;
 
     if(_animacaoAtual!=nullptr && _animacaoAtual->_numeroFrames > 1){
-        tempo -= tempoDecorrido;
+        _tempoDecorridoFrame -= tempoDecorrido;
     }
     
-    if(tempo <= 0){
+    if(_tempoDecorridoFrame <= 0){
+        foiAtualizado = true;
         int temp = _animacaoAtual->_duracao;
-        tempo += temp;
+        _tempoDecorridoFrame += temp;
 
         _indice = (_indice+1)%_animacaoAtual->_numeroFrames;
         _posImagem.x = _tamanho.x * _indice + _animacaoAtual->_frameInicial.x;
@@ -21,12 +22,14 @@ void Entidade::atualizar(int tempoDecorrido){
         if(mostrarDebug){
             printf("x:%d y:%d posImagem.x: %d posImagem.y: %d\n", _x, _y, _posImagem.x, _posImagem.y);
             printf("numero de frames %d", _animacaoAtual->_numeroFrames);
-            printf(" indice: %d tempo: %d duracaoAnimacao %d\n", _indice, tempo, _animacaoAtual->_duracao);
+            printf(" indice: %d tempo: %d duracaoAnimacao %d\n", _indice, _tempoDecorridoFrame, _animacaoAtual->_duracao);
             printf("\n");
         }
     }
 
     _caixaColisao = Retangulo(_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite);
+
+    return foiAtualizado;
 }
 
 void Entidade::adicionarAnimacao(std::string nome, infoAnimacao info){

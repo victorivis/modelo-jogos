@@ -138,6 +138,11 @@ void Player::tocouChao(){
     _tempoPulo = constantesPlayer::tempoPulo;
 }
 
+void Player::caiu(){
+    _noChao = false;
+    _tempoPulo = 0;
+}
+
 int Player::getAltura(){
     return _tamanho.y * aumentarSprite;
 }

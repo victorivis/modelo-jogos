@@ -3,6 +3,7 @@
 #include "player.h"
 #include "mapa.h"
 #include "projetil.h"
+#include "inimigos.h"
 
 class Jogo{
     public:
@@ -19,4 +20,5 @@ class Jogo{
         Player player2;
         std::vector<Projetil> _projeteis;
         int _indice;
+        Morcego morcego;
 };

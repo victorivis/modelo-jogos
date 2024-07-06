@@ -20,6 +20,7 @@ class Player : public Entidade{
         void atualizar(int tempoDecorrido);
         void mostrar(Tela &tela);
         void tocouChao();
+        void caiu();
         int getAltura();
     private:
         bool _noChao;

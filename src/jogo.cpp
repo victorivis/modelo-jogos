@@ -56,23 +56,25 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
-    _mapa.carregarMapa(tela, "mapa-para-mostrar-que-funciona");
+    _mapa.carregarMapa(tela, "mapa-inicial");
 
     bool rodarLoop=true;
     SDL_Event evento;
     
     SDL_Texture* alface = tela.carregarTextura("assets/sprites/alface.png");
     SDL_Texture* knight = tela.carregarTextura("assets/sprites/knight.png");
+    SDL_Texture* spriteMorcego = tela.carregarTextura("assets/sprites/morcego.png");
     player = Player(alface, Vector2(16, 16), _mapa.getSpawnpoint(), Vector2(0, 0));
     player2 = Player(knight, Vector2(32, 32), _mapa.getSpawnpoint(), Vector2(0, 0));
+    morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(500, 500), Vector2(0, 0), Vector2(600, 100), 1);
+    //morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(900, 800), Vector2(0, 0), Vector2(500, 500), 1);
 
     player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R});
     player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
 
-    int tempoInicial = SDL_GetTicks();
     _indice = 0;
     _projeteis = std::vector<Projetil>(8);
-
+    int tempoInicial = SDL_GetTicks();
     while(rodarLoop){
 
         input.resetar();
@@ -150,6 +152,7 @@ int Jogo::loopPrincipal(){
 void Jogo::atualizar(int tempo){
     player.atualizar(tempo);
     player2.atualizar(tempo);
+    morcego.atualizar(tempo);
     _mapa.atualizar(tempo);
     _mapa.lidarColisao(player);
     _mapa.lidarColisao(player2);
@@ -179,6 +182,7 @@ void Jogo::desenhar(Tela &tela){
     _mapa.mostrar(tela);
     player.mostrar(tela);
     player2.mostrar(tela);
+    morcego.mostrar(tela);
     tela.apresentar();
 
     for(int i=0; i<_projeteis.size(); i++){

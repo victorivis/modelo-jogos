@@ -24,7 +24,7 @@ class Entidade : public Imagem{
         void adicionarAnimacao(std::string nome, infoAnimacao info);
         void selecionarAnimacao(std::string nome);
 
-        void atualizar(int tempoDecorrido);
+        bool atualizar(int tempoDecorrido);
         Retangulo getCaixaColisao();
         //utiliza o void mostrar() de Imagem
     protected:
@@ -32,4 +32,5 @@ class Entidade : public Imagem{
         infoAnimacao* _animacaoAtual;
         std::map<std::string, infoAnimacao> _animacoes;
         Retangulo _caixaColisao;
+        int _tempoDecorridoFrame;
 };
