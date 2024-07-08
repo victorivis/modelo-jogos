@@ -75,15 +75,10 @@ void Perseguidor::atualizar(int tempoDecorrido){
 
     Entidade::atualizar(tempoDecorrido);
     if(_perseguidoX != nullptr && _perseguidoY != nullptr){
-        printf("perseguindo\n");
-
         float seno, cosseno;
         calcularSenoCosseno(Vector2(getX(), getY()), Vector2(*_perseguidoX, *_perseguidoY), seno, cosseno);
 
         empurrarX(_velocidade * cosseno);
         empurrarY(_velocidade * seno);
-    }
-    else{
-        printf("nao perseguindo\n");
     }
 }

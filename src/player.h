@@ -11,6 +11,7 @@ class Player : public Entidade{
         ~Player(){}
 
         void mover(Direcao direcao);
+        void dash();
         void adicionarControles(std::vector<SDL_Scancode> controles);
         void executarControles(Input &input);
 
@@ -32,5 +33,8 @@ class Player : public Entidade{
         float _dx;
         float _dy;
         int _tempoPulo;
+
+        float _tempDx;
+        float _tempDy;
 };
 

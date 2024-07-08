@@ -26,14 +26,19 @@ class Entidade : public Imagem{
 
         void empurrarX(float X);
         void empurrarY(float Y);
+        void morrer();
+        void reviver();
+        bool estaAtivo();
 
         bool atualizar(int tempoDecorrido);
+        void mostrar(Tela& tela);
         Retangulo getCaixaColisao();
-        //utiliza o void mostrar() de Imagem
+        
     protected:
         int _indice;
         infoAnimacao* _animacaoAtual;
         std::map<std::string, infoAnimacao> _animacoes;
         Retangulo _caixaColisao;
         int _tempoDecorridoFrame;
+        bool _ativo;
 };

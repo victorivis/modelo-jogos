@@ -66,7 +66,7 @@ void Projetil::lidarColisao(Entidade& entidade){
         if(getCaixaColisao().colisaoAABB(caixaEntidade)){
             entidade.empurrarX(_velocidade * _cosseno);
             entidade.empurrarY(_velocidade * _seno);
-
+            entidade.reviver();
             _inativo = true;
         }
     }

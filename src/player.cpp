@@ -1,6 +1,16 @@
 #include "player.h"
 #include "imagem.h"
 #include "global.h"
+#include <iostream>
+
+void aplicarAtrito(float& delta, float atrito){
+    if(abs(delta) >= 0.4f){
+        delta *= atrito;
+    }
+    else if(delta != 0){
+        delta = 0;
+    }
+}
 
 namespace constantesPlayer{
     float moveSpeed = 2.0f;
@@ -8,36 +18,36 @@ namespace constantesPlayer{
     float atrito = 0.90f;
     float forcaGravidade=0.8f;
     float limiteGravidade=8.0f;
+    float dashSpeed = moveSpeed*8;
     int tempoPulo = 400;
     float forcaPulo = 12*forcaGravidade;
 };
 
 //Por algum motivo eh impossivel selecionar a animacao no construtor
 Player::Player(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
-    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA), _spawnpoint(posTela), _noChao(false), _tempoPulo(0){
+    : Entidade(tex, tamanho, posTela, posImagem), _dx(0), _dy(0), _olhando(NENHUMA), _spawnpoint(posTela), _noChao(false), _tempoPulo(0), _tempDx(0.0f), _tempDy(0.0f){
 
     adicionarAnimacao("idleEsquerda", infoAnimacao(Vector2(0, 0), 100, 1));
     adicionarAnimacao("idleDireita", infoAnimacao(Vector2(0, 16), 100, 1));
 
     adicionarAnimacao("correrEsquerda", infoAnimacao(Vector2(0, 0), 300, 3));
     adicionarAnimacao("correrDireita", infoAnimacao(Vector2(0, 16), 300, 3));
+
+    adicionarAnimacao("dashDireita", infoAnimacao(Vector2(0, 48), 100, 2));
+    adicionarAnimacao("dashEsquerda", infoAnimacao(Vector2(0, 64), 100, 2));
 }
 
 void Player::mover(Direcao direcao){
     switch (direcao){
         case DIREITA:
             if(_dx < constantesPlayer::moveCap) _dx += constantesPlayer::moveSpeed;
-            if(_olhando != DIREITA){
-                selecionarAnimacao("correrDireita");
-                _olhando = DIREITA;
-            }
+            selecionarAnimacao("correrDireita");
+            _olhando = DIREITA;
             break;
         case ESQUERDA:
             if(-_dx < constantesPlayer::moveCap) _dx -= constantesPlayer::moveSpeed;
-            if(_olhando != ESQUERDA){
-                selecionarAnimacao("correrEsquerda");
-                _olhando = ESQUERDA;
-            }
+            selecionarAnimacao("correrEsquerda");
+            _olhando = ESQUERDA;
             break;
         case CIMA:
             if(-_dy < constantesPlayer::moveCap){
@@ -54,6 +64,17 @@ void Player::mover(Direcao direcao){
             if(_dy < constantesPlayer::moveCap) _dy += constantesPlayer::moveSpeed;
             //_olhando = BAIXO;
             break;
+    }
+}
+
+void Player::dash(){
+    if(_olhando == DIREITA){
+        selecionarAnimacao("dashDireita");
+        _tempDx += constantesPlayer::dashSpeed;
+    }
+    else if(_olhando == ESQUERDA){
+        selecionarAnimacao("dashEsquerda");
+        _tempDx -= constantesPlayer::dashSpeed;
     }
 }
 
@@ -89,17 +110,23 @@ void Player::executarControles(Input &input){
         setY(_spawnpoint.y);
         caiu();
     }
+    if(_controles.size() >= 6 && input.foiPressionada(_controles[5])){
+        dash();
+    }
     
     if(input.estaPressionada(_controles[2])==false && input.estaPressionada(_controles[3])==false){
         _dx *= constantesPlayer::atrito;
-        _olhando == DIREITA ? selecionarAnimacao("idleDireita") : selecionarAnimacao("idleEsquerda");
+        if(abs(_tempDx) < 1.0f && abs(_tempDy) < 1.0f){
+            _olhando == DIREITA ? selecionarAnimacao("idleDireita") : selecionarAnimacao("idleEsquerda");
+        }
     }
 
     if(input.estaPressionada(_controles[0])==false && input.estaPressionada(_controles[1])==false){
         if(_noChao == false){
             _tempoPulo = 0;
         }
-        _dy *= constantesPlayer::atrito;
+        
+        aplicarAtrito(_dy, constantesPlayer::atrito);
     }
 }
 
@@ -125,8 +152,11 @@ void Player::atualizar(int tempoDecorrido){
         _tempoPulo -= tempoDecorrido;
     }
 
-    _x += _dx;
-    _y += _dy;
+    _x += _dx + _tempDx;
+    _y += _dy + _tempDy;
+
+    aplicarAtrito(_tempDx, 0.9f);
+    aplicarAtrito(_tempDy, 0.9f);
 }
 
 void Player::mostrar(Tela &tela){

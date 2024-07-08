@@ -86,8 +86,13 @@ int Jogo::loopPrincipal(){
     perseguidores[0].perseguir(player.getpX(), player.getpY());
     perseguidores[1].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
 
+    //Testar o desempenho
+    for(int i=2; i<4; i++){
+        perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5));
+        perseguidores[i].perseguir(player.getpX(), player.getpY());
+    }
 
-    player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R});
+    player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R, SDL_SCANCODE_LSHIFT});
     player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
 
     _indice = 0;
@@ -212,13 +217,6 @@ void Jogo::atualizar(int tempo){
             ataques[i].lidarColisao(perseguidores[j]);
         }
     }
-
-    //for(int i=0; i<_projeteis.size(); i++){
-    //    for(int j=0; j<_mapa._colisoes.size(); i++){
-    //        _projeteis[i].lidarColisao(_mapa._colisoes[j]);
-    //    }
-    //    _projeteis[i].atualizar(tempo);
-    //}
 }
 
 void Jogo::desenhar(Tela &tela){

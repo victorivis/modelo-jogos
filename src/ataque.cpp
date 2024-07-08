@@ -42,16 +42,20 @@ void Ataque::mostrar(Tela& tela){
 }
 
 void Ataque::lidarColisao(Entidade& entidade){
-    Retangulo hitboxEntidade = entidade.getCaixaColisao();
+    if(entidade.estaAtivo()){
+        Retangulo hitboxEntidade = entidade.getCaixaColisao();
 
-    int fatorEmpurro = 10;
+        int fatorEmpurro = 10;
 
-    if(estaColidindo(hitboxEntidade)){
-        if(_ladoColisao == DIREITA){
-            entidade.empurrarX(fatorEmpurro);
-        }
-        else if(_ladoColisao == ESQUERDA){
-            entidade.empurrarX(-fatorEmpurro);
+        if(estaColidindo(hitboxEntidade)){
+            if(_ladoColisao == DIREITA){
+                entidade.empurrarX(fatorEmpurro);
+            }
+            else if(_ladoColisao == ESQUERDA){
+                entidade.empurrarX(-fatorEmpurro);
+            }
+
+            entidade.morrer();
         }
     }
 }
