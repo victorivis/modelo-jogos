@@ -24,6 +24,9 @@ class Entidade : public Imagem{
         void adicionarAnimacao(std::string nome, infoAnimacao info);
         void selecionarAnimacao(std::string nome);
 
+        void empurrarX(float X);
+        void empurrarY(float Y);
+
         bool atualizar(int tempoDecorrido);
         Retangulo getCaixaColisao();
         //utiliza o void mostrar() de Imagem

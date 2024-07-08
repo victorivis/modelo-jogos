@@ -18,6 +18,9 @@ class Tela{
 
         SDL_Renderer* getRenderer();
         SDL_Window* getWindow();
+
+        void selecionarSeguirCamera(float* seguirX, float* seguirY);
+        void seguirCamera();
         void moverCameraX(int X);
         void moverCameraY(int Y);
 
@@ -31,4 +34,7 @@ class Tela{
         SDL_Window* _janela;
         SDL_Renderer* _render;
         SDL_Cursor* _cursor;
+
+        float* _seguirX;
+        float* _seguirY;
 };

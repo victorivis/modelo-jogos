@@ -16,7 +16,7 @@ namespace definicoesRenderer{
 
 Vector2 tamanhoCamera(definicoesJanela::comprimento * 2, definicoesJanela::altura * 2);
 
-Tela::Tela(){
+Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
@@ -84,6 +84,8 @@ void Tela::apresentar(){
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
 
     SDL_SetRenderTarget(getRenderer(), NULL);
+
+    seguirCamera();
     SDL_RenderCopy(getRenderer(), criarTextura(), &origem, &destino);
 
     SDL_RenderPresent(getRenderer());
@@ -97,6 +99,32 @@ SDL_Renderer* Tela::getRenderer(){
 
 SDL_Window* Tela::getWindow(){
     return _janela;
+}
+
+void Tela::selecionarSeguirCamera(float* seguirX, float* seguirY){
+    if(seguirX != nullptr && seguirY != nullptr){
+        _seguirX = seguirX;
+        _seguirY = seguirY;
+    }
+}
+
+void Tela::seguirCamera(){
+    if(_seguirX != nullptr){
+        int velocidade = 3;
+
+        int novoX = *_seguirX - origem.w/2;
+        int novoY = *_seguirY - origem.h/2;
+
+        if(novoX < 0){
+            novoX = 0;
+        }
+        if(novoY < 0){
+            novoY = 0;
+        }
+
+        origem.x = novoX;
+        origem.y = novoY;
+    }
 }
 
 void Tela::moverCameraX(int X){

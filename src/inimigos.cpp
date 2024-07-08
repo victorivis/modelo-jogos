@@ -11,11 +11,12 @@ Morcego::Morcego(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 pos
 
 void Morcego::atualizar(int tempoDecorrido){
     if(_animacaoAtual == nullptr){
-        adicionarAnimacao("morcego", infoAnimacao(Vector2(0, 24), 60, 4));
+        adicionarAnimacao("morcego", infoAnimacao(Vector2(0, 24), 120, 4));
         selecionarAnimacao("morcego");
     }
 
-    if(Entidade::atualizar(tempoDecorrido)){
+    Entidade::atualizar(tempoDecorrido);
+    //if(Entidade::atualizar(tempoDecorrido)){
         if(sentido){
             if(_cosseno==0){
                 if(_seno > 0 ? _y > _trajetoFim.y : _y < _trajetoFim.y){
@@ -49,9 +50,17 @@ void Morcego::atualizar(int tempoDecorrido){
             _x -= _velocidade * _cosseno;
             _y -= _velocidade * _seno;
         }
-    }
+    //}
 }
 
 void Morcego::mostrar(Tela& tela){
     Imagem::mostrar(tela);
 }
+
+//Perseguidor::Perseguidor(){}
+//Perseguidor::~Perseguidor(){}
+//Perseguidor::Perseguidor(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem): Entidade(tex, tamanho, posTela, posImagem){}
+//
+//void Perseguidor::perseguir(Vector2 pos){
+//    
+//}

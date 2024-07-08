@@ -30,7 +30,7 @@ void medirFPS(int& tempoDecorrido, Tela& tela){
 }
 
 void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &indice){
-    static int _indice = 0;
+    //static int _indice = 0;
 
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
@@ -49,8 +49,10 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
     float seno = deltaY/hipotenusa;
     float cosseno = deltaX/hipotenusa;
 
+    std::cout << indice << "\n";
+
     projeteis[indice] = Projetil(tela.carregarTextura("assets/sprites/bala.png"), Vector2(8, 8), centroPlayer, Vector2(0, 0), seno, cosseno, velocidade);
-    _indice = (_indice + 1) % projeteis.size();
+    indice = (indice + 1) % projeteis.size();
 }
 
 int Jogo::loopPrincipal(){
@@ -67,10 +69,12 @@ int Jogo::loopPrincipal(){
     player = Player(alface, Vector2(16, 16), _mapa.getSpawnpoint(), Vector2(0, 0));
     player2 = Player(knight, Vector2(32, 32), _mapa.getSpawnpoint(), Vector2(0, 0));
 
+    ataques = std::vector<Ataque>(1, Ataque(Retangulo(500, 500, 40, 40), 200));
+
     //O if eh para destruir o vector caminhoMorcegos
     if(true){
         std::vector<Linha> caminhoMorcegos = _mapa.getMorcegos();
-        int velocidadeMorcegos = 4;
+        int velocidadeMorcegos = 2;
 
         for(int i=0; i<caminhoMorcegos.size(); i++){
             morcegos.push_back(Morcego(spriteMorcego, Vector2(16, 24), caminhoMorcegos[i].p1, Vector2(0, 0), caminhoMorcegos[i].p2, velocidadeMorcegos));
@@ -85,6 +89,8 @@ int Jogo::loopPrincipal(){
     _indice = 0;
     _projeteis = std::vector<Projetil>(8);
     int tempoInicial = SDL_GetTicks();
+
+    tela.selecionarSeguirCamera(player.getpX(), player.getpY());
     while(rodarLoop){
 
         input.resetar();
@@ -98,13 +104,13 @@ int Jogo::loopPrincipal(){
 			}
 
             if(evento.type == SDL_MOUSEBUTTONDOWN){
-                if(evento.button.button == SDL_BUTTON_LEFT){
+                if(evento.button.button == SDL_BUTTON_RIGHT){
                     atirar(tela, player, _projeteis, _indice);
                 }
 
-                if(evento.button.button == SDL_BUTTON_RIGHT){
-                    for(int i=0; i<_projeteis.size(); i++){
-                        _projeteis[i].desativarProjetil();
+                if(evento.button.button == SDL_BUTTON_LEFT){
+                    if(ataques[0].estaRodando() == false){
+                        ataques[0].invocarAtaque(player, player.getDirecao());
                     }
                 }
             }
@@ -184,6 +190,13 @@ void Jogo::atualizar(int tempo){
         _projeteis[i].lidarColisao(player2);
     }
 
+    for(int i=0; i<ataques.size(); i++){
+        ataques[i].atualizar(tempo);
+        
+        ataques[i].lidarColisao(player2);
+        ataques[i].lidarColisao(morcegos);
+    }
+
     //for(int i=0; i<_projeteis.size(); i++){
     //    for(int j=0; j<_mapa._colisoes.size(); i++){
     //        _projeteis[i].lidarColisao(_mapa._colisoes[j]);
@@ -199,6 +212,10 @@ void Jogo::desenhar(Tela &tela){
 
     for(int i=0; i<morcegos.size(); i++){
         morcegos[i].mostrar(tela);
+    }
+
+    for(int i=0; i<ataques.size(); i++){
+        ataques[i].mostrar(tela);
     }
 
     tela.apresentar();

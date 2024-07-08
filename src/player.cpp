@@ -147,3 +147,14 @@ void Player::caiu(){
 int Player::getAltura(){
     return _tamanho.y * aumentarSprite;
 }
+
+Direcao Player::getDirecao(){
+    return _olhando;
+}
+
+float* Player::getpX(){
+    return &_x;
+}
+float* Player::getpY(){
+    return &_y;
+}

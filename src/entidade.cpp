@@ -53,6 +53,13 @@ void Entidade::selecionarAnimacao(std::string nome){
     }
 }
 
+void Entidade::empurrarX(float X){
+    _x += X;
+}
+void Entidade::empurrarY(float Y){
+    _y += Y;
+}
+
 Retangulo Entidade::getCaixaColisao(){
     return _caixaColisao;
 }

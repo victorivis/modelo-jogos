@@ -4,6 +4,7 @@
 #include "mapa.h"
 #include "projetil.h"
 #include "inimigos.h"
+#include "ataque.h"
 
 class Jogo{
     public:
@@ -21,4 +22,5 @@ class Jogo{
         std::vector<Projetil> _projeteis;
         int _indice;
         std::vector<Morcego> morcegos;
+        std::vector<Ataque> ataques;
 };

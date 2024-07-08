@@ -22,6 +22,11 @@ class Player : public Entidade{
         void tocouChao();
         void caiu();
         int getAltura();
+        Direcao getDirecao();
+
+        float* getpX();
+        float* getpY();
+
     private:
         bool _noChao;
         std::vector<SDL_Scancode> _controles;

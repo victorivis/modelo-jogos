@@ -17,3 +17,11 @@ class Morcego : public Entidade{
         int _velocidade;
         bool sentido;
 };
+
+class Perseguidor : public Entidade {
+    public:
+        Perseguidor();
+        ~Perseguidor();
+        Perseguidor(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem);
+        void perseguir(Vector2 pos);
+};
