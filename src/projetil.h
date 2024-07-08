@@ -9,6 +9,7 @@ class Projetil : public Entidade{
         void atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
         void lidarColisao(Retangulo& colidido);
+        void lidarColisao(Entidade& player);
         void lidarColisao(Player& player);
         void desativarProjetil();
         bool estaAtivo();

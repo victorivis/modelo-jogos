@@ -57,10 +57,33 @@ void Morcego::mostrar(Tela& tela){
     Imagem::mostrar(tela);
 }
 
-//Perseguidor::Perseguidor(){}
-//Perseguidor::~Perseguidor(){}
-//Perseguidor::Perseguidor(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem): Entidade(tex, tamanho, posTela, posImagem){}
-//
-//void Perseguidor::perseguir(Vector2 pos){
-//    
-//}
+Perseguidor::Perseguidor(): _perseguidoX(nullptr), _perseguidoY(nullptr){}
+Perseguidor::~Perseguidor(){}
+Perseguidor::Perseguidor(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem, float velocidade): 
+    Entidade(tex, tamanho, posTela, posImagem), _perseguidoX(nullptr), _perseguidoY(nullptr), _velocidade(velocidade){}
+
+void Perseguidor::perseguir(float* posX, float* posY){
+    _perseguidoX = posX;
+    _perseguidoY = posY;
+}
+
+void Perseguidor::atualizar(int tempoDecorrido){
+    if(_animacaoAtual == nullptr){
+        adicionarAnimacao("idle", infoAnimacao(Vector2(0, 0), 1, 1));
+        selecionarAnimacao("idle");
+    }
+
+    Entidade::atualizar(tempoDecorrido);
+    if(_perseguidoX != nullptr && _perseguidoY != nullptr){
+        printf("perseguindo\n");
+
+        float seno, cosseno;
+        calcularSenoCosseno(Vector2(getX(), getY()), Vector2(*_perseguidoX, *_perseguidoY), seno, cosseno);
+
+        empurrarX(_velocidade * cosseno);
+        empurrarY(_velocidade * seno);
+    }
+    else{
+        printf("nao perseguindo\n");
+    }
+}

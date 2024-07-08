@@ -151,10 +151,3 @@ int Player::getAltura(){
 Direcao Player::getDirecao(){
     return _olhando;
 }
-
-float* Player::getpX(){
-    return &_x;
-}
-float* Player::getpY(){
-    return &_y;
-}

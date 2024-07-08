@@ -24,9 +24,6 @@ class Player : public Entidade{
         int getAltura();
         Direcao getDirecao();
 
-        float* getpX();
-        float* getpY();
-
     private:
         bool _noChao;
         std::vector<SDL_Scancode> _controles;

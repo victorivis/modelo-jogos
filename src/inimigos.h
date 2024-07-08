@@ -22,6 +22,12 @@ class Perseguidor : public Entidade {
     public:
         Perseguidor();
         ~Perseguidor();
-        Perseguidor(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem);
-        void perseguir(Vector2 pos);
+        Perseguidor(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem, float velocidade=2.5);
+        void perseguir(float* posX, float* posY);
+        void atualizar(int tempoDecorrido);
+
+    private:
+        float* _perseguidoX;
+        float* _perseguidoY;
+        float _velocidade;
 };

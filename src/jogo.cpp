@@ -66,11 +66,12 @@ int Jogo::loopPrincipal(){
     SDL_Texture* alface = tela.carregarTextura("assets/sprites/alface.png");
     SDL_Texture* knight = tela.carregarTextura("assets/sprites/knight.png");
     SDL_Texture* spriteMorcego = tela.carregarTextura("assets/sprites/morcego.png");
+    SDL_Texture* spritePerseguidor = tela.carregarTextura("assets/sprites/alvo.png");
+
     player = Player(alface, Vector2(16, 16), _mapa.getSpawnpoint(), Vector2(0, 0));
     player2 = Player(knight, Vector2(32, 32), _mapa.getSpawnpoint(), Vector2(0, 0));
 
     ataques = std::vector<Ataque>(1, Ataque(Retangulo(500, 500, 40, 40), 200));
-
     //O if eh para destruir o vector caminhoMorcegos
     if(true){
         std::vector<Linha> caminhoMorcegos = _mapa.getMorcegos();
@@ -81,7 +82,10 @@ int Jogo::loopPrincipal(){
         }
     }
 
-    //morcego = Morcego(spriteMorcego, Vector2(16, 24), Vector2(100, 400), Vector2(0, 0), Vector2(600, 100), 10);
+    perseguidores = std::vector<Perseguidor>(2, Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5));
+    perseguidores[0].perseguir(player.getpX(), player.getpY());
+    perseguidores[1].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
+
 
     player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R});
     player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
@@ -181,6 +185,10 @@ void Jogo::atualizar(int tempo){
         _projeteis[i].atualizar(tempo);
     }
 
+    for(int i=0; i<perseguidores.size(); i++){
+        perseguidores[i].atualizar(tempo);
+    }
+
     std::vector<Retangulo> colisoes = _mapa.getColisoes();
     for(int i=0; i<_projeteis.size(); i++){
         for(int j=0; j<colisoes.size(); j++){
@@ -188,6 +196,10 @@ void Jogo::atualizar(int tempo){
         }
 
         _projeteis[i].lidarColisao(player2);
+
+        for(int j=0; j<perseguidores.size(); j++){
+            _projeteis[i].lidarColisao(perseguidores[j]);
+        }
     }
 
     for(int i=0; i<ataques.size(); i++){
@@ -195,6 +207,10 @@ void Jogo::atualizar(int tempo){
         
         ataques[i].lidarColisao(player2);
         ataques[i].lidarColisao(morcegos);
+        
+        for(int j=0; j<perseguidores.size(); j++){
+            ataques[i].lidarColisao(perseguidores[j]);
+        }
     }
 
     //for(int i=0; i<_projeteis.size(); i++){
@@ -209,6 +225,10 @@ void Jogo::desenhar(Tela &tela){
     _mapa.mostrar(tela);
     player.mostrar(tela);
     player2.mostrar(tela);
+
+    for(int i=0; i<perseguidores.size(); i++){
+        perseguidores[i].mostrar(tela);
+    }
 
     for(int i=0; i<morcegos.size(); i++){
         morcegos[i].mostrar(tela);

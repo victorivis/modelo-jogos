@@ -18,6 +18,8 @@ class Imagem{
         void setY(int num);
         int getX();
         int getY();
+        float* getpX();
+        float* getpY();
 
     protected:
         SDL_Texture* _tex;

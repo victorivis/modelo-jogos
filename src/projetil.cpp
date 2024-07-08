@@ -59,3 +59,15 @@ void Projetil::lidarColisao(Player& player){
         }
     }
 }
+
+void Projetil::lidarColisao(Entidade& entidade){
+    if(_inativo==false){
+        Retangulo caixaEntidade = entidade.getCaixaColisao();
+        if(getCaixaColisao().colisaoAABB(caixaEntidade)){
+            entidade.empurrarX(_velocidade * _cosseno);
+            entidade.empurrarY(_velocidade * _seno);
+
+            _inativo = true;
+        }
+    }
+}

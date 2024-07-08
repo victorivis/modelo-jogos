@@ -32,3 +32,10 @@ int Imagem::getX(){
 int Imagem::getY(){
     return _y;
 }
+
+float* Imagem::getpX(){
+    return &_x;
+}
+float* Imagem::getpY(){
+    return &_y;
+}

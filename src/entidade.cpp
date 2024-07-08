@@ -2,7 +2,7 @@
 #include <iostream>
 
 Entidade::Entidade(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
-    : Imagem(tex, tamanho, posTela, posImagem), _indice(-1), _animacaoAtual(nullptr), _tempoDecorridoFrame(0){}
+    : Imagem(tex, tamanho, posTela, posImagem), _indice(-1), _animacaoAtual(nullptr), _tempoDecorridoFrame(1){}
 
 bool Entidade::atualizar(int tempoDecorrido){
     bool foiAtualizado=false;
