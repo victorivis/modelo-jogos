@@ -39,16 +39,23 @@ void BlocoMovel::atualizar(){
             }
         }
         
-        if(_sentido){
-            _x += _velocidade * _cosseno;
-            _y += _velocidade * _seno;
-        }
-        else{
-            _x -= _velocidade * _cosseno;
-            _y -= _velocidade * _seno;
-        }
+        _x += getDeslocamentoX();
+        _y += getDeslocamentoY();
 }
 
 Retangulo BlocoMovel::getHitBox(){
     return Retangulo(_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite);
+}
+
+double BlocoMovel::getDeslocamentoX(){
+    if(_sentido){
+        return _velocidade * _cosseno;
+    }
+    return -_velocidade * _cosseno;
+}
+double BlocoMovel::getDeslocamentoY(){
+    if(_sentido){
+        return _velocidade * _seno;
+    }
+    return -_velocidade * _seno;
 }

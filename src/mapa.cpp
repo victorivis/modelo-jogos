@@ -303,10 +303,16 @@ void Mapa::lidarColisao(Player& player){
     }
 
     for(int i=0; i<_blocosMoveis.size(); i++){
+        
+        
         Retangulo caixaPlayer = player.getCaixaColisao();
         Retangulo caixaBloco = _blocosMoveis[i].getHitBox();
 
+        caixaPlayer.setY(caixaPlayer.getCima()+1);
+
         Direcao daColisao = caixaBloco.ladoColisao(caixaPlayer);
+
+        caixaPlayer.setY(caixaPlayer.getCima()-1);
 
         if(daColisao != NENHUMA){
             if(daColisao == DIREITA){
@@ -317,13 +323,16 @@ void Mapa::lidarColisao(Player& player){
             }
             else if(daColisao == CIMA){
                 if(player.estaCaindo()){
-                    player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()-3);
+                    player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()+1);
                     player.tocouChao();
                 }
             }
             else if(daColisao == BAIXO){
                 player.setY(caixaBloco.getBaixo()+1);
             }
+
+            player.empurrarX(_blocosMoveis[i].getDeslocamentoX());
+            player.empurrarY(_blocosMoveis[i].getDeslocamentoY());
 
             houveColisao = true;
         }

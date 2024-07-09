@@ -8,6 +8,8 @@ class BlocoMovel : public Imagem{
         BlocoMovel(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem, Vector2 pontoFinal, int velocidade);
         void atualizar();
         Retangulo getHitBox();
+        double getDeslocamentoX();
+        double getDeslocamentoY();
 
     private:
         Vector2 _pontoInicio;

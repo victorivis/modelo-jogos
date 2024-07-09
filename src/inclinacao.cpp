@@ -15,7 +15,6 @@ Inclinacao::Inclinacao(Vector2 p1, Vector2 p2): _p1(p1), _p2(p2){
 }
 
 bool Inclinacao::estaColidindo(Player& player){
-    //printf("p1(%d, %d), p2(%d, %d), player(%d, %d)", _p1.x, _p1.x, _p2.x, _p2.y, player.getX(), player.getY());
     bool colideX = (_p1.x <= player.getX() && _p2.x >= player.getX()) || (_p2.x <= player.getX() && _p1.x >= player.getX());
     bool colideY = (_p1.y <= player.getY() && _p2.y >= player.getY()) || (_p2.y <= player.getY() && _p1.y >= player.getY());
     return colideX && colideY;
