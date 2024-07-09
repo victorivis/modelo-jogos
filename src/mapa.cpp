@@ -81,12 +81,36 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
                 Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
                 Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
-                
-                printf("p1(%d, %d), p2(%d, %d)\n", p1.x, p1.y, p2.x, p2.y);
 
                 _caminhoMorcegos.push_back(Linha(p1, p2));
 
                 pMorcego = pMorcego->NextSiblingElement("object");
+            }
+        }
+        else if(pOjectGroup->Attribute("name") == std::string("blocosMoveis")){
+            //SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/plataforma.png");
+            //Vector2 tamanhoPlataforma(48, 16);
+            SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/world_tileset.png");
+            Vector2 tamanhoPlataforma(16, 16);
+
+            tinyxml2::XMLElement* pBlocosMoveis = pOjectGroup->FirstChildElement("object");
+            while(pBlocosMoveis){
+                int x = pBlocosMoveis->IntAttribute("x");
+                int y = pBlocosMoveis->IntAttribute("y");
+
+                tinyxml2::XMLElement* pPolyline = pBlocosMoveis->FirstChildElement("polyline");
+
+                const char* texto = pPolyline->Attribute("points");
+                std::vector<std::string> pontos = split(texto, ' ');
+
+                std::vector<std::string> ponto2 = split(pontos[1].c_str(), ',');
+
+                Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
+                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
+
+                _blocosMoveis.push_back(BlocoMovel(texturaPlataforma, tamanhoPlataforma, p1, Vector2(0, 0), p2, 4));
+
+                pBlocosMoveis = pBlocosMoveis->NextSiblingElement("object");
             }
         }        
 
@@ -107,9 +131,6 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
         std::string imagemMapa = "assets/mapas/" + std::string(caminhoMapa);
         SDL_Texture* tex = tela.carregarTextura(imagemMapa);
-
-        //int larguraTextura = pImage->IntAttribute("width")  / larguraBloco;
-        //int alturaTextura =  pImage->IntAttribute("height") / alturaBloco;
 
         infoBlocos.push_back(infoBloco(tex, gidAtual));
 
@@ -216,6 +237,10 @@ void Mapa::atualizar(int tempoDecorrido){
     for(int i=0; i<_blocosAnimados.size(); i++){
         _blocosAnimados[i].atualizar(tempoDecorrido);
     }
+
+    for(int i=0; i<_blocosMoveis.size(); i++){
+        _blocosMoveis[i].atualizar();
+    }
 }
 
 void Mapa::mostrar(Tela& tela){
@@ -234,6 +259,10 @@ void Mapa::mostrar(Tela& tela){
 
     for(int i=0; i<_blocosAnimados.size(); i++){
         _blocosAnimados[i].mostrar(tela);
+    }
+
+    for(int i=0; i<_blocosMoveis.size(); i++){
+        _blocosMoveis[i].mostrar(tela);
     }
 }
 
@@ -261,6 +290,29 @@ void Mapa::lidarColisao(Player& player){
 
     for(int i=0; i<_ladeiras.size(); i++){
         _ladeiras[i].lidarColisao(player);
+    }
+
+    for(int i=0; i<_blocosMoveis.size(); i++){
+        Retangulo caixaPlayer = player.getCaixaColisao();
+        Retangulo caixaBloco = _blocosMoveis[i].getHitBox();
+
+        Direcao daColisao = caixaBloco.ladoColisao(caixaPlayer);
+
+        if(daColisao != NENHUMA){
+            if(daColisao == DIREITA){
+                player.setX(caixaBloco.getDireita()+1);
+            }
+            else if(daColisao == ESQUERDA){
+                player.setX(caixaBloco.getEsquerda()-caixaPlayer.getLargura()-1);
+            }
+            else if(daColisao == CIMA){
+                player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()-1);
+                player.tocouChao();
+            }
+            else if(daColisao == BAIXO){
+                player.setY(caixaBloco.getBaixo()+1);
+            }
+        }
     }
 }
 

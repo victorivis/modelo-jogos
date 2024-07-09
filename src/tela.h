@@ -23,6 +23,9 @@ class Tela{
         void seguirCamera();
         void moverCameraX(int X);
         void moverCameraY(int Y);
+        int getCameraX();
+        int getCameraY();
+        
 
     private:
         std::map<std::string, SDL_Surface*> _todasAsSuperficies;

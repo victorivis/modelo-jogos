@@ -55,7 +55,9 @@ void Ataque::lidarColisao(Entidade& entidade){
                 entidade.empurrarX(-fatorEmpurro);
             }
 
-            entidade.morrer();
+            if(ataqueMata){
+                entidade.morrer();
+            }
         }
     }
 }

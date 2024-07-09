@@ -6,6 +6,7 @@ extern float aumentarSprite;
 extern const int FPS;
 extern const int deltaT;
 extern bool gravidade;
+extern bool ataqueMata;
 
 enum Direcao{
     DIREITA, ESQUERDA, CIMA, BAIXO, NENHUMA

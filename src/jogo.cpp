@@ -37,8 +37,8 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
     Retangulo colisaoPlayer = player.getCaixaColisao();
     Vector2 centroPlayer(colisaoPlayer.getCentroX(), colisaoPlayer.getCentroY());
 
-    float deltaX = mouseX - centroPlayer.x;
-    float deltaY = mouseY - centroPlayer.y;
+    float deltaX = mouseX+tela.getCameraX() - centroPlayer.x;
+    float deltaY = mouseY+tela.getCameraY() - centroPlayer.y;
 
     float hipotenusa = sqrt(deltaX * deltaX + deltaY * deltaY);
     if(hipotenusa == 0){
@@ -48,8 +48,6 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
     int velocidade = 10;
     float seno = deltaY/hipotenusa;
     float cosseno = deltaX/hipotenusa;
-
-    std::cout << indice << "\n";
 
     projeteis[indice] = Projetil(tela.carregarTextura("assets/sprites/bala.png"), Vector2(8, 8), centroPlayer, Vector2(0, 0), seno, cosseno, velocidade);
     indice = (indice + 1) % projeteis.size();
@@ -83,12 +81,12 @@ int Jogo::loopPrincipal(){
     }
 
     perseguidores = std::vector<Perseguidor>(2, Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5));
-    perseguidores[0].perseguir(player.getpX(), player.getpY());
-    perseguidores[1].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
+    perseguidores[0].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
+    perseguidores[1].perseguir(player.getpX(), player.getpY());
 
     //Testar o desempenho
     for(int i=2; i<4; i++){
-        perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5));
+        perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + i/10.0f));
         perseguidores[i].perseguir(player.getpX(), player.getpY());
     }
 
@@ -123,11 +121,24 @@ int Jogo::loopPrincipal(){
                     }
                 }
             }
+
+            if(evento.type == SDL_MOUSEWHEEL) {
+                if(evento.wheel.y > 0) {
+                    int posicaoAtual = perseguidores.size()-1;
+                    perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + posicaoAtual/10.0f));
+                    perseguidores[posicaoAtual+1].perseguir(player.getpX(), player.getpY());
+                } 
+                else if(evento.wheel.y < 0) {
+                    if(perseguidores.size() > 1){
+                        perseguidores.pop_back();
+                    }
+                }
+            }
             
             input.receberInput(evento);
 
-            //Alguns comandos para debug
-            if(input.foiPressionada(SDL_SCANCODE_G)){
+            //Alguns comandos para debuggar e se divertir
+            if(input.foiLiberada(SDL_SCANCODE_G)){
                 exibirColisoes = !exibirColisoes;
                 printf("exibirColisoes: %d\n", exibirColisoes);
             }
@@ -139,17 +150,9 @@ int Jogo::loopPrincipal(){
                     aumentarSprite--;
                 }
             }
-            if(input.estaPressionada(SDL_SCANCODE_L)){
-                tela.moverCameraX(1);
-            }
-            if(input.estaPressionada(SDL_SCANCODE_J)){
-                tela.moverCameraX(-1);
-            }
-            if(input.estaPressionada(SDL_SCANCODE_I)){
-                tela.moverCameraY(-1);
-            }
-            if(input.estaPressionada(SDL_SCANCODE_K)){
-                tela.moverCameraY(1);
+            if(input.foiLiberada(SDL_SCANCODE_Z)){
+                ataqueMata = !ataqueMata;
+                printf("Ataque mata: %d\n", ataqueMata);
             }
         }
         player.executarControles(input);

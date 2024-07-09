@@ -7,6 +7,7 @@ float aumentarSprite=1.5f;
 const int FPS = 50;
 int const deltaT = 1000 / FPS;
 bool gravidade = true;
+bool ataqueMata = false;
 
 double calcularHipotenusa(Vector2& p1, Vector2& p2){
     int deltaX = p1.x - p2.x;

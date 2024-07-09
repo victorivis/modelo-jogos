@@ -7,6 +7,7 @@
 #include "animacao.h"
 #include "player.h"
 #include "inclinacao.h"
+#include "blocos.h"
 
 void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& GidPosicao);
 Vector2 calcularGidRelativo(int gidAtual, int firstgid, int larguraTextura, int larguraBloco, int alturaBloco);
@@ -51,6 +52,7 @@ class Mapa{
 
     private:
         Vector2 _spawnpoint;
+        std::vector<BlocoMovel> _blocosMoveis;
         std::vector<Inclinacao> _ladeiras;
         std::vector<Imagem> _blocos;
         std::vector<Animacao> _blocosAnimados;  

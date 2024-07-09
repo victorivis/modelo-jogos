@@ -25,7 +25,9 @@ Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
 
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
 
-    _cursor = SDL_CreateColorCursor(carregarSuperficie("assets/sprites/cursor.png"), 0, 0);
+    SDL_Surface* imagemMouse = carregarSuperficie("assets/sprites/cursor.png");
+    _cursor = SDL_CreateColorCursor(imagemMouse, imagemMouse->w/2, imagemMouse->h/2);
+
     SDL_SetCursor(_cursor);
 
     origem = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
@@ -142,4 +144,11 @@ void Tela::moverCameraY(int Y){
     else if(origem.y+Y < tamanhoCamera.y){
         origem.y += Y;
     }
+}
+
+int Tela::getCameraX(){
+    return origem.x;
+}
+int Tela::getCameraY(){
+    return origem.y;
 }

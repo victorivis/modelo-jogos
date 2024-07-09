@@ -24,4 +24,5 @@ class Jogo{
         std::vector<Morcego> morcegos;
         std::vector<Perseguidor> perseguidores;
         std::vector<Ataque> ataques;
+        
 };
