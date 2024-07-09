@@ -14,7 +14,7 @@ Jogo::~Jogo(){
 
 }
 
-void medirFPS(int& tempoDecorrido, Tela& tela){
+void medirFPS(int& tempoDecorrido, Tela& tela, int numEntidades){
     static int tempoAquiDentro=0;
     static int framesAtuais=0;
     
@@ -22,7 +22,7 @@ void medirFPS(int& tempoDecorrido, Tela& tela){
     tempoAquiDentro+=tempoDecorrido;
     if(tempoAquiDentro >= 1000){
         char nomeAplicativo[100];
-        sprintf(nomeAplicativo, "Uma simples game engine - FPS: %d", framesAtuais);
+        sprintf(nomeAplicativo, "Uma simples game engine - Entidades: %d - FPS: %d", numEntidades, framesAtuais);
         SDL_SetWindowTitle(tela.getWindow(), nomeAplicativo);
         tempoAquiDentro -= 1000;
         framesAtuais=0;
@@ -172,7 +172,7 @@ int Jogo::loopPrincipal(){
         }
 
         atualizar(delta);
-        medirFPS(delta, tela);
+        medirFPS(delta, tela, 5 + perseguidores.size());
         desenhar(tela);
 
         tempoInicial = tempoAtual;

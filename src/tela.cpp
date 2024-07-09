@@ -14,7 +14,7 @@ namespace definicoesRenderer{
     const Uint32 flags = SDL_RENDERER_ACCELERATED;
 };
 
-Vector2 tamanhoCamera(definicoesJanela::comprimento * 2, definicoesJanela::altura * 2);
+Vector2 tamanhoCenario(definicoesJanela::comprimento * 2, definicoesJanela::altura * 2);
 
 Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -77,7 +77,7 @@ SDL_Texture* Tela::carregarTextura(std::string caminhoParaImagem){
 
 SDL_Texture* Tela::criarTextura(){
     if(_todasAsTexturas.count("criada") == 0){
-        _todasAsTexturas["criada"] = SDL_CreateTexture(getRenderer(), SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, tamanhoCamera.x, tamanhoCamera.y);
+        _todasAsTexturas["criada"] = SDL_CreateTexture(getRenderer(), SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, tamanhoCenario.x, tamanhoCenario.y);
     }
     return _todasAsTexturas["criada"];
 }
@@ -120,8 +120,15 @@ void Tela::seguirCamera(){
         if(novoX < 0){
             novoX = 0;
         }
+        else if(novoX > tamanhoCenario.x - origem.w){
+            novoX = tamanhoCenario.x - origem.w;
+        }
+
         if(novoY < 0){
             novoY = 0;
+        }
+        else if(novoY > tamanhoCenario.y - origem.h){
+            novoY = tamanhoCenario.y - origem.h;
         }
 
         origem.x = novoX;
@@ -133,7 +140,7 @@ void Tela::moverCameraX(int X){
     if(X < 0 && origem.x+X >= 0){
         origem.x += X;
     }
-    else if(origem.x+X < tamanhoCamera.x){
+    else if(origem.x+X < tamanhoCenario.x){
         origem.x += X;
     }
 }
@@ -141,7 +148,7 @@ void Tela::moverCameraY(int Y){
     if(Y < 0 && origem.y+Y >= 0){
         origem.y += Y;
     }
-    else if(origem.y+Y < tamanhoCamera.y){
+    else if(origem.y+Y < tamanhoCenario.y){
         origem.y += Y;
     }
 }
