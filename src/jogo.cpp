@@ -154,6 +154,10 @@ int Jogo::loopPrincipal(){
                 ataqueMata = !ataqueMata;
                 printf("Ataque mata: %d\n", ataqueMata);
             }
+            if(input.foiLiberada(SDL_SCANCODE_H)){
+                gravidade = !gravidade;
+                printf("Ataque mata: %d\n", gravidade);
+            }
         }
         player.executarControles(input);
         player2.executarControles(input);

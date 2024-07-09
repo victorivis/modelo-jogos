@@ -88,10 +88,10 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             }
         }
         else if(pOjectGroup->Attribute("name") == std::string("blocosMoveis")){
-            //SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/plataforma.png");
-            //Vector2 tamanhoPlataforma(48, 16);
-            SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/world_tileset.png");
-            Vector2 tamanhoPlataforma(16, 16);
+            SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/plataforma.png");
+            Vector2 tamanhoPlataforma(48, 16);
+            //SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/world_tileset.png");
+            //Vector2 tamanhoPlataforma(16, 16);
 
             tinyxml2::XMLElement* pBlocosMoveis = pOjectGroup->FirstChildElement("object");
             while(pBlocosMoveis){
@@ -267,9 +267,15 @@ void Mapa::mostrar(Tela& tela){
 }
 
 void Mapa::lidarColisao(Player& player){
+    bool houveColisao(false);
+
     for(int i=0; i<_colisoes.size(); i++){
         Retangulo caixaPlayer = player.getCaixaColisao();
+        caixaPlayer.setY(caixaPlayer.getCima()+1);
+
         Direcao daColisao = _colisoes[i].ladoColisao(caixaPlayer);
+
+        caixaPlayer.setY(caixaPlayer.getCima()-1);
 
         if(daColisao != NENHUMA){
             if(daColisao == DIREITA){
@@ -279,12 +285,16 @@ void Mapa::lidarColisao(Player& player){
                 player.setX(_colisoes[i].getEsquerda()-caixaPlayer.getLargura()-1);
             }
             else if(daColisao == CIMA){
-                player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura()-1);
-                player.tocouChao();
+                if(player.estaCaindo()){
+                    player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura());
+                    player.tocouChao();
+                }
             }
             else if(daColisao == BAIXO){
                 player.setY(_colisoes[i].getBaixo()+1);
             }
+            
+            houveColisao = true;
         }
     }
 
@@ -306,12 +316,22 @@ void Mapa::lidarColisao(Player& player){
                 player.setX(caixaBloco.getEsquerda()-caixaPlayer.getLargura()-1);
             }
             else if(daColisao == CIMA){
-                player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()-1);
-                player.tocouChao();
+                if(player.estaCaindo()){
+                    player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()-3);
+                    player.tocouChao();
+                }
             }
             else if(daColisao == BAIXO){
                 player.setY(caixaBloco.getBaixo()+1);
             }
+
+            houveColisao = true;
+        }
+    }
+
+    if(houveColisao == false){
+        if(player.estaCaindo() == false){
+            player.caiu();
         }
     }
 }

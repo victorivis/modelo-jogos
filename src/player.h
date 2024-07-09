@@ -24,6 +24,7 @@ class Player : public Entidade{
         void caiu();
         int getAltura();
         Direcao getDirecao();
+        bool estaCaindo();
 
     private:
         bool _noChao;

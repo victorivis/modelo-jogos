@@ -80,10 +80,10 @@
   <object id="20" name="plataforma" x="640" y="318">
    <polyline points="0,0 -2,-273.333"/>
   </object>
-  <object id="21" x="22.6667" y="304">
+  <object id="21" name="plataforma" x="22.6667" y="304">
    <polyline points="0,0 566.667,2.66667"/>
   </object>
-  <object id="22" x="24" y="273.333">
+  <object id="22" name="plataforma" x="24" y="273.333">
    <polyline points="0,0 65.3333,-2.66667"/>
   </object>
  </objectgroup>

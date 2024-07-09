@@ -20,7 +20,7 @@ namespace constantesPlayer{
     float limiteGravidade=8.0f;
     float dashSpeed = moveSpeed*8;
     int tempoPulo = 400;
-    float forcaPulo = 12*forcaGravidade;
+    float forcaPulo = 12*0.8f;//forcaGravidade;
 };
 
 //Por algum motivo eh impossivel selecionar a animacao no construtor
@@ -53,6 +53,12 @@ void Player::mover(Direcao direcao){
             if(-_dy < constantesPlayer::moveCap){
                 if(gravidade){
                     _dy -= constantesPlayer::forcaPulo * _tempoPulo / constantesPlayer::tempoPulo;
+
+                    //Isso eh engracado, o player para nao tremer a tela fica enfiado dentro do bloco de colisao
+                    //Entao para conseguir pular precisa modificar a posicao dele para que ele saida de dentro do bloco
+                    if(_tempoPulo == constantesPlayer::tempoPulo){
+                        _y -= 3;
+                    }
                 }
                 else{
                     _dy -= constantesPlayer::moveSpeed;
@@ -180,4 +186,8 @@ int Player::getAltura(){
 
 Direcao Player::getDirecao(){
     return _olhando;
+}
+
+bool Player::estaCaindo(){
+    return !_noChao;
 }
