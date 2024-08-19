@@ -65,7 +65,6 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             _spawnpoint.x = aumentarSprite * std::round(pObjeto->FloatAttribute("x"));
             _spawnpoint.y = aumentarSprite * std::round(pObjeto->FloatAttribute("y"));
         }
-
         else if(pOjectGroup->Attribute("name") == std::string("morcegos")){
             tinyxml2::XMLElement* pMorcego = pOjectGroup->FirstChildElement("object");
             while(pMorcego){

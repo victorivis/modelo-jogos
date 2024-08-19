@@ -56,6 +56,7 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
+    //_mapa.carregarMapa(tela, "mapa-inicial");
     _mapa.carregarMapa(tela, "teste-morcego");
 
     bool rodarLoop=true;
@@ -81,8 +82,12 @@ int Jogo::loopPrincipal(){
     }
 
     perseguidores = std::vector<Perseguidor>(2, Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5));
-    perseguidores[0].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
-    perseguidores[1].perseguir(player.getpX(), player.getpY());
+    if(morcegos.size() > 0 && perseguidores.size() > 0){
+        perseguidores[0].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
+    }
+    if(perseguidores.size() > 1){
+        perseguidores[1].perseguir(player.getpX(), player.getpY());
+    }    
 
     //Testar o desempenho
     for(int i=2; i<4; i++){
@@ -156,7 +161,12 @@ int Jogo::loopPrincipal(){
             }
             if(input.foiLiberada(SDL_SCANCODE_H)){
                 gravidade = !gravidade;
-                printf("Ataque mata: %d\n", gravidade);
+                printf("Gravidade mata: %d\n", gravidade);
+            }
+            if(input.foiLiberada(SDL_SCANCODE_F)){
+                FPS = (FPS==50 ? 2000 : 50);
+                deltaT = 1000/FPS;
+                printf("Limite de FPS: %d\n", FPS);
             }
         }
         player.executarControles(input);

@@ -4,8 +4,8 @@
 bool mostrarDebug=false;
 bool exibirColisoes=false;
 float aumentarSprite=1.5f;
-const int FPS = 50;
-int const deltaT = 1000 / FPS;
+int FPS = 50;
+int deltaT = 1000 / FPS;
 bool gravidade = true;
 bool ataqueMata = false;
 

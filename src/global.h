@@ -3,8 +3,8 @@
 extern bool mostrarDebug;
 extern bool exibirColisoes;
 extern float aumentarSprite;
-extern const int FPS;
-extern const int deltaT;
+extern int FPS;
+extern int deltaT;
 extern bool gravidade;
 extern bool ataqueMata;
 
