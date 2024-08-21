@@ -14,6 +14,8 @@ class Player : public Entidade{
         void dash();
         void adicionarControles(std::vector<SDL_Scancode> controles);
         void executarControles(Input &input);
+        void setSpawnPoint(Vector2 spawnpoint);
+        void voltarParaSpawn();
 
         void aplicarForcaX(float X);
         void aplicarForcaY(float Y);

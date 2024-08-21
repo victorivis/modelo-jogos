@@ -67,8 +67,13 @@ int Jogo::loopPrincipal(){
     SDL_Texture* spriteMorcego = tela.carregarTextura("assets/sprites/morcego.png");
     SDL_Texture* spritePerseguidor = tela.carregarTextura("assets/sprites/alvo.png");
 
-    player = Player(alface, Vector2(16, 16), _mapa.getSpawnpoint(), Vector2(0, 0));
-    player2 = Player(knight, Vector2(32, 32), _mapa.getSpawnpoint(), Vector2(0, 0));
+    player = Player(alface, Vector2(16, 16), Vector2(), Vector2(0, 0));
+    player2 = Player(knight, Vector2(32, 32), Vector2(), Vector2(0, 0));
+
+    player.setSpawnPoint(_mapa.getSpawnpoint());
+    player2.setSpawnPoint(_mapa.getSpawnpoint());
+    player.voltarParaSpawn();
+    player2.voltarParaSpawn();
 
     ataques = std::vector<Ataque>(1, Ataque(Retangulo(500, 500, 40, 40), 200));
     //O if eh para destruir o vector caminhoMorcegos
@@ -129,9 +134,10 @@ int Jogo::loopPrincipal(){
 
             if(evento.type == SDL_MOUSEWHEEL) {
                 if(evento.wheel.y > 0) {
-                    int posicaoAtual = perseguidores.size()-1;
-                    perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + posicaoAtual/10.0f));
-                    perseguidores[posicaoAtual+1].perseguir(player.getpX(), player.getpY());
+                    int posicaoAtual = perseguidores.size();
+                    perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + (posicaoAtual-1)/10.0f ));
+                    perseguidores[posicaoAtual].perseguir(player.getpX(), player.getpY());
+                    
                 } 
                 else if(evento.wheel.y < 0) {
                     if(perseguidores.size() > 1){

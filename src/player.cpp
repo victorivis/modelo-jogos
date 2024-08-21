@@ -88,6 +88,16 @@ void Player::adicionarControles(std::vector<SDL_Scancode> controles){
     _controles = controles;
 }
 
+void Player::setSpawnPoint(Vector2 spawnpoint){
+    _spawnpoint = spawnpoint;
+}
+
+void Player::voltarParaSpawn(){
+    setX(_spawnpoint.x);
+    setY(_spawnpoint.y);
+    caiu();
+}
+
 void Player::executarControles(Input &input){
     if(input.estaPressionada(_controles[0])){
         if(gravidade){
@@ -112,9 +122,7 @@ void Player::executarControles(Input &input){
         mover(DIREITA);
     }
     if(input.foiPressionada(_controles[4])){
-        setX(_spawnpoint.x);
-        setY(_spawnpoint.y);
-        caiu();
+        voltarParaSpawn();
     }
     if(_controles.size() >= 6 && input.foiPressionada(_controles[5])){
         dash();

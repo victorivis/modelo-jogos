@@ -4,8 +4,14 @@ SRC_DIR = src
 # Diretório onde serão gerados os arquivos objeto
 OBJ_DIR = obj
 
-# Libs
-LIBS = -I ..\SDL2\x86_64-w64-mingw32\include\ -L ..\SDL2\x86_64-w64-mingw32\lib\ -I ..\tinyxml2\ -L ..\tinyxml2 -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -ltinyxml2
+ifdef OS
+    LIBS = -I ..\SDL2\x86_64-w64-mingw32\include\ -L ..\SDL2\x86_64-w64-mingw32\lib\ -I ..\tinyxml2\ -L ..\tinyxml2 -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -ltinyxml2
+	RM = del
+else
+	LIBS = -Wall $(shell pkg-config --cflags --libs sdl2) -lSDL2_image -ltinyxml2
+	RM = rm
+endif
+
 
 # Arquivos objeto
 obj_files = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(wildcard $(SRC_DIR)/*.cpp))
@@ -19,7 +25,10 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	g++ $< $(LIBS) -c -o $@
 
 # Regra principal
+
 all: $(obj_files)
 	g++ $(obj_files) $(LIBS) -o main.exe
-	del $(OBJ_DIR)\*.o
+	$(RM) $(OBJ_DIR)\*.o
+
+run: all
 	.\main.exe
