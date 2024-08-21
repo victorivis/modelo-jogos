@@ -38,6 +38,9 @@ class Tela{
         SDL_Renderer* _render;
         SDL_Cursor* _cursor;
 
+        int _cameraX;
+        int _cameraY;
+
         float* _seguirX;
         float* _seguirY;
 };

@@ -37,8 +37,8 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
     Retangulo colisaoPlayer = player.getCaixaColisao();
     Vector2 centroPlayer(colisaoPlayer.getCentroX(), colisaoPlayer.getCentroY());
 
-    float deltaX = mouseX+tela.getCameraX() - centroPlayer.x;
-    float deltaY = mouseY+tela.getCameraY() - centroPlayer.y;
+    float deltaX = mouseX - tela.getCameraX() - centroPlayer.x;
+    float deltaY = mouseY - tela.getCameraY() - centroPlayer.y;
 
     float hipotenusa = sqrt(deltaX * deltaX + deltaY * deltaY);
     if(hipotenusa == 0){

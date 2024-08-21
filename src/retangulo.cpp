@@ -76,6 +76,9 @@ void Retangulo::debugRetangulo(){
 
 void Retangulo::exibirRetangulo(Tela& tela){
     SDL_Rect myRect = getSDLRect();
+    myRect.x += tela.getCameraX();
+    myRect.y += tela.getCameraY();
+
     SDL_SetRenderDrawColor(tela.getRenderer(), 255, 0, 0, 255);
     SDL_RenderFillRect(tela.getRenderer(), &myRect);
 }

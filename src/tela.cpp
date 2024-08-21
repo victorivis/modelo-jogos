@@ -28,7 +28,7 @@ void mostrarDrivers(){
     }
 }
 
-Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
+Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr), _cameraX(200), _cameraY(0){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
@@ -45,7 +45,7 @@ Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
     origem = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
     destino = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
 
-    SDL_SetRenderTarget(getRenderer(), criarTextura());
+    //SDL_SetRenderTarget(getRenderer(), criarTextura());
     mostrarDrivers();
 }
 
@@ -98,13 +98,13 @@ SDL_Texture* Tela::criarTextura(){
 void Tela::apresentar(){
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
 
-    SDL_SetRenderTarget(getRenderer(), NULL);
+    //SDL_SetRenderTarget(getRenderer(), NULL);
 
     seguirCamera();
-    SDL_RenderCopy(getRenderer(), criarTextura(), &origem, &destino);
+    //SDL_RenderCopy(getRenderer(), criarTextura(), &origem, &destino);
 
     SDL_RenderPresent(getRenderer());
-    SDL_SetRenderTarget(getRenderer(), criarTextura());
+    //SDL_SetRenderTarget(getRenderer(), criarTextura());
     SDL_RenderClear(_render);
 }
 
@@ -127,9 +127,10 @@ void Tela::seguirCamera(){
     if(_seguirX != nullptr){
         int velocidade = 3;
 
-        int novoX = *_seguirX - origem.w/2;
-        int novoY = *_seguirY - origem.h/2;
+        int novoX = (*_seguirX - origem.w/2) * -1;
+        int novoY = (*_seguirY - origem.h/2) * -1;
 
+        /*
         if(novoX < 0){
             novoX = 0;
         }
@@ -143,9 +144,13 @@ void Tela::seguirCamera(){
         else if(novoY > tamanhoCenario.y - origem.h){
             novoY = tamanhoCenario.y - origem.h;
         }
+        */
 
         origem.x = novoX;
         origem.y = novoY;
+
+        _cameraX = novoX;
+        _cameraY = novoY;
     }
 }
 
@@ -167,8 +172,8 @@ void Tela::moverCameraY(int Y){
 }
 
 int Tela::getCameraX(){
-    return origem.x;
+    return _cameraX;
 }
 int Tela::getCameraY(){
-    return origem.y;
+    return _cameraY;
 }
