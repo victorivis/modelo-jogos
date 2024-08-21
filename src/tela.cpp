@@ -16,6 +16,18 @@ namespace definicoesRenderer{
 
 Vector2 tamanhoCenario(definicoesJanela::comprimento * 2, definicoesJanela::altura * 2);
 
+void mostrarDrivers(){
+    int numDrivers = SDL_GetNumRenderDrivers();
+    for (int i = 0; i < numDrivers; i++) {
+        SDL_RendererInfo info;
+        if (SDL_GetRenderDriverInfo(i, &info) == 0) {
+            printf("Driver %d: %s\n", i, info.name);
+        } else {
+            printf("Erro ao obter informações do driver %d\n", i);
+        }
+    }
+}
+
 Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
@@ -34,6 +46,7 @@ Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
     destino = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
 
     SDL_SetRenderTarget(getRenderer(), criarTextura());
+    mostrarDrivers();
 }
 
 Tela::~Tela(){
