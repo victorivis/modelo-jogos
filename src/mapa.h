@@ -9,6 +9,7 @@
 #include "inclinacao.h"
 #include "blocos.h"
 #include "inimigos.h"
+#include "porta.h"
 
 void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& GidPosicao);
 Vector2 calcularGidRelativo(int gidAtual, int firstgid, int larguraTextura, int larguraBloco, int alturaBloco);
@@ -39,11 +40,10 @@ class Mapa{
         Mapa(){};
         ~Mapa(){};
         
-        void carregarMapa(Tela& tela, std::string caminhoParaMapa);
+        void carregarMapa(std::string caminhoParaMapa);
         void lidarColisao(Player& player);
         void atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
-        void recarregar(Tela& tela, std::string caminhoParaMapa);
         std::vector<Retangulo> getColisoes();
         std::vector<Linha> getMorcegos();
         Vector2 getSpawnpoint();
@@ -56,4 +56,5 @@ class Mapa{
         std::vector<Imagem> _blocos;
         std::vector<Animacao> _blocosAnimados;  
         std::vector<Linha> _caminhoMorcegos;  
+        std::vector<Porta> _portas;
 };

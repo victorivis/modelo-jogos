@@ -57,7 +57,7 @@ int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
     //_mapa.carregarMapa(tela, "mapa-inicial");
-    _mapa.carregarMapa(tela, "teste-morcego");
+    _mapa.carregarMapa("teste-morcego");
 
     bool rodarLoop=true;
     SDL_Event evento;

@@ -8,7 +8,19 @@
 
 char caminhoBase[] = "assets/mapas/";
 
-void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
+void Mapa::carregarMapa(std::string caminhoParaMapa){
+    //Destroi o mapa anterior, se existir
+    _colisoes.clear();
+    _blocosMoveis.clear();
+    _ladeiras.clear();
+    _blocos.clear();
+    _blocosAnimados.clear();
+    _caminhoMorcegos.clear();
+    _portas.clear();
+
+    std::cout << _ladeiras.size() << "\n";
+
+    //Carrega o novo mapa
     std::string nomeArquivo = (caminhoBase + caminhoParaMapa + ".tmx");
 
     tinyxml2::XMLDocument DocumentoMapa;
@@ -62,8 +74,10 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         }
         else if(pOjectGroup->Attribute("name") == std::string("spawnpoint")){
             tinyxml2::XMLElement* pObjeto = pOjectGroup->FirstChildElement("object");
-            _spawnpoint.x = aumentarSprite * std::round(pObjeto->FloatAttribute("x"));
-            _spawnpoint.y = aumentarSprite * std::round(pObjeto->FloatAttribute("y"));
+            if(pObjeto){
+                _spawnpoint.x = aumentarSprite * std::round(pObjeto->FloatAttribute("x"));
+                _spawnpoint.y = aumentarSprite * std::round(pObjeto->FloatAttribute("y"));
+            }
         }
         else if(pOjectGroup->Attribute("name") == std::string("morcegos")){
             tinyxml2::XMLElement* pMorcego = pOjectGroup->FirstChildElement("object");
@@ -87,9 +101,9 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             }
         }
         else if(pOjectGroup->Attribute("name") == std::string("blocosMoveis")){
-            SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/plataforma.png");
+            SDL_Texture* texturaPlataforma = Tela::carregarTextura("assets/tileset/plataforma.png");
             Vector2 tamanhoPlataforma(48, 16);
-            //SDL_Texture* texturaPlataforma = tela.carregarTextura("assets/tileset/world_tileset.png");
+            //SDL_Texture* texturaPlataforma = Tela::carregarTextura("assets/tileset/world_tileset.png");
             //Vector2 tamanhoPlataforma(16, 16);
 
             tinyxml2::XMLElement* pBlocosMoveis = pOjectGroup->FirstChildElement("object");
@@ -111,7 +125,36 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
 
                 pBlocosMoveis = pBlocosMoveis->NextSiblingElement("object");
             }
-        }        
+        }
+        else if(pOjectGroup->Attribute("name") == std::string("portas")){
+            tinyxml2::XMLElement* pPorta = pOjectGroup->FirstChildElement("object");
+            while(pPorta){
+                int x = std::round(pPorta->FloatAttribute("x"));
+                int y = std::round(pPorta->FloatAttribute("y"));
+                int largura = std::round(pPorta->FloatAttribute("width"));
+                int altura = std::round(pPorta->FloatAttribute("height"));
+                Retangulo areaColisao = Retangulo(x, y, largura, altura);
+
+                std::string destino = "";
+
+                tinyxml2::XMLElement* pPropriedades = pPorta->FirstChildElement("properties");
+                tinyxml2::XMLElement* pPropriedadePersonalizada = pPropriedades->FirstChildElement("property");
+                while (pPropriedadePersonalizada){
+                    if(std::string(pPropriedadePersonalizada->Attribute("name")) == std::string("destino")){
+                        destino = std::string(pPropriedadePersonalizada->Attribute("value"));
+                    }
+
+                    pPropriedadePersonalizada = pPropriedadePersonalizada->NextSiblingElement("property");
+                }
+
+                if(destino != ""){
+                    _portas.push_back(Porta(areaColisao, destino));
+                }
+
+                pPorta = pPorta->NextSiblingElement("object");
+            }
+            
+        }
 
         pOjectGroup = pOjectGroup->NextSiblingElement("objectgroup");
     }
@@ -129,7 +172,7 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
         const char* caminhoMapa = pImage->Attribute("source");
 
         std::string imagemMapa = "assets/mapas/" + std::string(caminhoMapa);
-        SDL_Texture* tex = tela.carregarTextura(imagemMapa);
+        SDL_Texture* tex = Tela::carregarTextura(imagemMapa);
 
         infoBlocos.push_back(infoBloco(tex, gidAtual));
 
@@ -230,6 +273,8 @@ void Mapa::carregarMapa(Tela& tela, std::string caminhoParaMapa){
             _blocos.push_back( Imagem(blocoAtual.tex, Vector2(larguraBloco, alturaBloco), Vector2(posTelaX, posTelaY), posImagem) );
         }
     }
+
+    std::cout << "Numero de portas: " << _portas.size() << "\n";
 }
 
 void Mapa::atualizar(int tempoDecorrido){
@@ -263,11 +308,17 @@ void Mapa::mostrar(Tela& tela){
     for(int i=0; i<_blocosMoveis.size(); i++){
         _blocosMoveis[i].mostrar(tela);
     }
+
+    for(int i=0; i<_portas.size(); i++){
+        //Retangulo teste = _portas[i].getRetangulo();
+        _portas[i].getRetangulo().exibirRetangulo(tela);
+    }
 }
 
 void Mapa::lidarColisao(Player& player){
     bool houveColisao(false);
 
+    //Blocos solidos
     for(int i=0; i<_colisoes.size(); i++){
         Retangulo caixaPlayer = player.getCaixaColisao();
         caixaPlayer.setY(caixaPlayer.getCima()+1);
@@ -297,13 +348,13 @@ void Mapa::lidarColisao(Player& player){
         }
     }
 
+    //Ladeiras
     for(int i=0; i<_ladeiras.size(); i++){
         _ladeiras[i].lidarColisao(player);
     }
 
+    //Plataformas voadoras
     for(int i=0; i<_blocosMoveis.size(); i++){
-        
-        
         Retangulo caixaPlayer = player.getCaixaColisao();
         Retangulo caixaBloco = _blocosMoveis[i].getHitBox();
 
@@ -342,14 +393,17 @@ void Mapa::lidarColisao(Player& player){
             player.caiu();
         }
     }
-}
 
-void Mapa::recarregar(Tela& tela, std::string caminhoParaMapa){
-    _blocos.clear();
-    _blocosAnimados.clear();
-    _colisoes.clear();
-
-    carregarMapa(tela, caminhoParaMapa);
+    //Portas
+    Retangulo caixaPlayer = player.getCaixaColisao();
+    for(int i=0; i<_portas.size(); i++){
+        if(_portas[i].getRetangulo().colisaoAABB(caixaPlayer)){
+            carregarMapa(_portas[i].getDestino());
+            player.setSpawnPoint(getSpawnpoint());
+            player.voltarParaSpawn();
+            break;
+        }
+    }
 }
 
 std::vector<Retangulo> Mapa::getColisoes(){

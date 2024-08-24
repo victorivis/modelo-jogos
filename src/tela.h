@@ -10,8 +10,8 @@ class Tela{
     public:
         Tela();
         ~Tela();
-        SDL_Surface* carregarSuperficie(std::string caminhoParaImagem);
-        SDL_Texture* carregarTextura(std::string caminhoParaImagem);
+        static SDL_Surface* carregarSuperficie(std::string caminhoParaImagem);
+        static SDL_Texture* carregarTextura(std::string caminhoParaImagem);
         SDL_Texture* criarTextura();
         
         void apresentar();
@@ -28,8 +28,8 @@ class Tela{
         
 
     private:
-        std::map<std::string, SDL_Surface*> _todasAsSuperficies;
-        std::map<std::string, SDL_Texture*> _todasAsTexturas;
+        static std::map<std::string, SDL_Surface*> _todasAsSuperficies;
+        static std::map<std::string, SDL_Texture*> _todasAsTexturas;
 
         SDL_Rect origem;
         SDL_Rect destino;

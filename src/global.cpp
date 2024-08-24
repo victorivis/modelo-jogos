@@ -15,6 +15,7 @@ double calcularHipotenusa(Vector2& p1, Vector2& p2){
 
     return sqrt(deltaX * deltaX + deltaY * deltaY);
 }
+
 void calcularSenoCosseno(Vector2 p1, Vector2 p2, float& seno, float& cosseno){
     double hipotenusa = calcularHipotenusa(p1, p2);
 

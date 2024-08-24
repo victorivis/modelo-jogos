@@ -2,6 +2,11 @@
 #include "global.h"
 #include <iostream>
 
+//Para que carregarTexturas seja acessivel globalmente
+SDL_Renderer* rendererGlobal=nullptr;
+std::map<std::string, SDL_Surface*> Tela::_todasAsSuperficies;
+std::map<std::string, SDL_Texture*> Tela::_todasAsTexturas;
+
 namespace definicoesJanela{
     const int comprimento= 1080;
     const int altura = 720;
@@ -34,6 +39,8 @@ Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr), _cameraX(200), _cameraY(0){
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
         definicoesJanela::comprimento, definicoesJanela::altura, definicoesJanela::flags);
     _render = SDL_CreateRenderer(_janela, -1, definicoesRenderer::flags);
+
+    rendererGlobal = _render;
 
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
 
@@ -82,8 +89,13 @@ SDL_Surface* Tela::carregarSuperficie(std::string caminhoParaImagem){
 }
 
 SDL_Texture* Tela::carregarTextura(std::string caminhoParaImagem){
+    if(rendererGlobal == nullptr){
+        std::cout << "Impossivel carregar textura. Tela nao foi criada ainda.\n";
+        return nullptr;
+    }
+
     if(_todasAsTexturas.count(caminhoParaImagem) == 0){
-        _todasAsTexturas[caminhoParaImagem] = SDL_CreateTextureFromSurface(getRenderer(), carregarSuperficie(caminhoParaImagem));
+        _todasAsTexturas[caminhoParaImagem] = SDL_CreateTextureFromSurface(rendererGlobal, carregarSuperficie(caminhoParaImagem));
     }
     return _todasAsTexturas[caminhoParaImagem];
 }
