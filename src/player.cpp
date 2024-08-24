@@ -189,7 +189,7 @@ void Player::caiu(){
 }
 
 int Player::getAltura(){
-    return _tamanho.y * aumentarSprite;
+    return _tamanho.y;
 }
 
 Direcao Player::getDirecao(){

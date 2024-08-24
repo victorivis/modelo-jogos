@@ -145,6 +145,12 @@ int Jogo::loopPrincipal(){
                     }
                 }
             }
+
+            else if(evento.type == SDL_WINDOWEVENT){
+                if(evento.window.event == SDL_WINDOWEVENT_RESIZED){
+                    tela.atualizarTamanhoCamera();
+                }
+            }
             
             input.receberInput(evento);
 
@@ -173,6 +179,20 @@ int Jogo::loopPrincipal(){
                 FPS = (FPS==50 ? 2000 : 50);
                 deltaT = 1000/FPS;
                 printf("Limite de FPS: %d\n", FPS);
+            }
+
+            const int velocidadeCamera = 10;
+            if(input.estaPressionada(SDL_SCANCODE_UP)){
+                tela.moverCameraY(-velocidadeCamera);
+            }
+            else if(input.estaPressionada(SDL_SCANCODE_DOWN)){
+                tela.moverCameraY(velocidadeCamera);
+            }
+            else if(input.estaPressionada(SDL_SCANCODE_RIGHT)){
+                tela.moverCameraX(velocidadeCamera);
+            }
+            else if(input.estaPressionada(SDL_SCANCODE_LEFT)){
+                tela.moverCameraX(-velocidadeCamera);
             }
         }
         player.executarControles(input);

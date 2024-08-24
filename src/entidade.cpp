@@ -27,7 +27,7 @@ bool Entidade::atualizar(int tempoDecorrido){
             }
         }
 
-        _caixaColisao = Retangulo(_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite);
+        _caixaColisao = Retangulo(_x, _y, _tamanho.x, _tamanho.y);
     }
 
     return foiAtualizado;

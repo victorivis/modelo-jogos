@@ -18,7 +18,7 @@ class Tela{
 
         SDL_Renderer* getRenderer();
         SDL_Window* getWindow();
-
+        void atualizarTamanhoCamera();
         void selecionarSeguirCamera(float* seguirX, float* seguirY);
         void seguirCamera();
         void moverCameraX(int X);
@@ -31,15 +31,12 @@ class Tela{
         static std::map<std::string, SDL_Surface*> _todasAsSuperficies;
         static std::map<std::string, SDL_Texture*> _todasAsTexturas;
 
-        SDL_Rect origem;
+        SDL_Rect _camera;
         SDL_Rect destino;
 
         SDL_Window* _janela;
         SDL_Renderer* _render;
         SDL_Cursor* _cursor;
-
-        int _cameraX;
-        int _cameraY;
 
         float* _seguirX;
         float* _seguirY;

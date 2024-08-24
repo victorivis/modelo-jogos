@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="54">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="58">
  <tileset firstgid="1" name="world_tileset" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="../tileset/world_tileset.png" width="256" height="256"/>
  </tileset>
@@ -86,7 +86,11 @@
    <polyline points="0,0 -3,98"/>
   </object>
  </objectgroup>
- <objectgroup id="3" name="spawnpoint"/>
+ <objectgroup id="3" name="spawnpoint">
+  <object id="57" x="198.667" y="354">
+   <point/>
+  </object>
+ </objectgroup>
  <objectgroup id="4" name="morcegos">
   <object id="50" name="Morcego" x="138" y="189">
    <polyline points="0,0 24.5,181.5"/>

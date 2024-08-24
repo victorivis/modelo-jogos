@@ -33,7 +33,7 @@ void mostrarDrivers(){
     }
 }
 
-Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr), _cameraX(200), _cameraY(0){
+Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
     _janela = SDL_CreateWindow("Uma game engine simples", definicoesJanela::posX, definicoesJanela::posY, 
@@ -46,13 +46,10 @@ Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr), _cameraX(200), _cameraY(0){
 
     SDL_Surface* imagemMouse = carregarSuperficie("assets/sprites/cursor.png");
     _cursor = SDL_CreateColorCursor(imagemMouse, imagemMouse->w/2, imagemMouse->h/2);
-
     SDL_SetCursor(_cursor);
 
-    origem = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
-    destino = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
-
-    //SDL_SetRenderTarget(getRenderer(), criarTextura());
+    _camera = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
+    
     mostrarDrivers();
 }
 
@@ -109,14 +106,8 @@ SDL_Texture* Tela::criarTextura(){
 
 void Tela::apresentar(){
     SDL_SetRenderDrawColor(getRenderer(), 150, 150, 150, 255);
-
-    //SDL_SetRenderTarget(getRenderer(), NULL);
-
     seguirCamera();
-    //SDL_RenderCopy(getRenderer(), criarTextura(), &origem, &destino);
-
     SDL_RenderPresent(getRenderer());
-    //SDL_SetRenderTarget(getRenderer(), criarTextura());
     SDL_RenderClear(_render);
 }
 
@@ -128,6 +119,10 @@ SDL_Window* Tela::getWindow(){
     return _janela;
 }
 
+void Tela::atualizarTamanhoCamera(){
+    SDL_GetWindowSize(getWindow(), &_camera.w, &_camera.h);
+}
+
 void Tela::selecionarSeguirCamera(float* seguirX, float* seguirY){
     if(seguirX != nullptr && seguirY != nullptr){
         _seguirX = seguirX;
@@ -137,55 +132,21 @@ void Tela::selecionarSeguirCamera(float* seguirX, float* seguirY){
 
 void Tela::seguirCamera(){
     if(_seguirX != nullptr){
-        int velocidade = 3;
-
-        int novoX = (*_seguirX - origem.w/2) * -1;
-        int novoY = (*_seguirY - origem.h/2) * -1;
-
-        /*
-        if(novoX < 0){
-            novoX = 0;
-        }
-        else if(novoX > tamanhoCenario.x - origem.w){
-            novoX = tamanhoCenario.x - origem.w;
-        }
-
-        if(novoY < 0){
-            novoY = 0;
-        }
-        else if(novoY > tamanhoCenario.y - origem.h){
-            novoY = tamanhoCenario.y - origem.h;
-        }
-        */
-
-        origem.x = novoX;
-        origem.y = novoY;
-
-        _cameraX = novoX;
-        _cameraY = novoY;
+        _camera.x = _camera.w / (2.0 * aumentarSprite) - (*_seguirX);
+        _camera.y = _camera.h / (2.0 * aumentarSprite) - (*_seguirY);
     }
 }
 
 void Tela::moverCameraX(int X){
-    if(X < 0 && origem.x+X >= 0){
-        origem.x += X;
-    }
-    else if(origem.x+X < tamanhoCenario.x){
-        origem.x += X;
-    }
+    _camera.x += X;
 }
 void Tela::moverCameraY(int Y){
-    if(Y < 0 && origem.y+Y >= 0){
-        origem.y += Y;
-    }
-    else if(origem.y+Y < tamanhoCenario.y){
-        origem.y += Y;
-    }
+    _camera.y += Y;
 }
 
 int Tela::getCameraX(){
-    return _cameraX;
+    return _camera.x;
 }
 int Tela::getCameraY(){
-    return _cameraY;
+    return _camera.y;
 }

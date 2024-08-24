@@ -41,7 +41,7 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
                 int y = std::round(pBlocoColisao->FloatAttribute("y"));
                 int largura = std::round(pBlocoColisao->FloatAttribute("width"));
                 int altura = std::round(pBlocoColisao->FloatAttribute("height"));
-                _colisoes.push_back(Retangulo(x * aumentarSprite, y * aumentarSprite, largura * aumentarSprite, altura * aumentarSprite));
+                _colisoes.push_back(Retangulo(x, y, largura, altura));
 
                 pBlocoColisao = pBlocoColisao->NextSiblingElement("object");
             }
@@ -62,8 +62,8 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
 
                 std::vector<std::string> ponto2 = split(pontos[1].c_str(), ',');
 
-                Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
-                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
+                Vector2 p1 = Vector2(x, y);
+                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x), (stoi(ponto2[1]) + y));
                 
                 printf("p1(%d, %d), p2(%d, %d)\n", p1.x, p1.y, p2.x, p2.y);
 
@@ -75,8 +75,8 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
         else if(pOjectGroup->Attribute("name") == std::string("spawnpoint")){
             tinyxml2::XMLElement* pObjeto = pOjectGroup->FirstChildElement("object");
             if(pObjeto){
-                _spawnpoint.x = aumentarSprite * std::round(pObjeto->FloatAttribute("x"));
-                _spawnpoint.y = aumentarSprite * std::round(pObjeto->FloatAttribute("y"));
+                _spawnpoint.x = std::round(pObjeto->FloatAttribute("x"));
+                _spawnpoint.y = std::round(pObjeto->FloatAttribute("y"));
             }
         }
         else if(pOjectGroup->Attribute("name") == std::string("morcegos")){
@@ -92,8 +92,8 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
 
                 std::vector<std::string> ponto2 = split(pontos[1].c_str(), ',');
 
-                Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
-                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
+                Vector2 p1 = Vector2(x, y);
+                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x), (stoi(ponto2[1]) + y));
 
                 _caminhoMorcegos.push_back(Linha(p1, p2));
 
@@ -118,8 +118,8 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
 
                 std::vector<std::string> ponto2 = split(pontos[1].c_str(), ',');
 
-                Vector2 p1 = Vector2(x * aumentarSprite, y * aumentarSprite);
-                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x) * aumentarSprite, (stoi(ponto2[1]) + y) * aumentarSprite);
+                Vector2 p1 = Vector2(x, y);
+                Vector2 p2 = Vector2( (stoi(ponto2[0]) + x), (stoi(ponto2[1]) + y));
 
                 _blocosMoveis.push_back(BlocoMovel(texturaPlataforma, tamanhoPlataforma, p1, Vector2(0, 0), p2, 4));
 
@@ -255,8 +255,8 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
         larguraTextura /= larguraBloco;
 
         
-        int posTelaX = (posicaoComprimida % larguraMapa) * larguraBloco * aumentarSprite;
-        int posTelaY = (posicaoComprimida / larguraMapa) * alturaBloco  * aumentarSprite;
+        int posTelaX = (posicaoComprimida % larguraMapa) * larguraBloco;
+        int posTelaY = (posicaoComprimida / larguraMapa) * alturaBloco;
         Vector2 posImagem = calcularGidRelativo(gidAtual, blocoAtual.gid, larguraTextura, larguraBloco, alturaBloco);
 
         if(temAnimacao){
@@ -388,6 +388,7 @@ void Mapa::lidarColisao(Player& player){
         }
     }
 
+    //Verifica se o player esta no ar
     if(houveColisao == false){
         if(player.estaCaindo() == false){
             player.caiu();
@@ -439,13 +440,7 @@ void lerCSV(const char* minhaString, char charDividir, std::vector<Vector2>& Gid
             posicao++;
             inicio = atual+1;
         }
-        //i++;
     }while(minhaString[i++]!='\0');
-
-    // printf("split rodou\n");
-    // for(int i=0; i<GidPosicao.size(); i++){
-    //     std::cout << GidPosicao[i].x << " " << GidPosicao[i].y << "\n";
-    // }
 }
 
 std::vector<std::string> split(const char* minhaString, char charDividir){

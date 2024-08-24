@@ -44,7 +44,7 @@ void BlocoMovel::atualizar(){
 }
 
 Retangulo BlocoMovel::getHitBox(){
-    return Retangulo(_x, _y, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite);
+    return Retangulo(_x, _y, _tamanho.x, _tamanho.y);
 }
 
 double BlocoMovel::getDeslocamentoX(){
