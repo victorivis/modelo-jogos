@@ -1,9 +1,9 @@
 #include "global.h"
 #include <cmath>
 
-bool mostrarDebug=false;
+bool mostrarDebug=true;
 bool exibirColisoes=false;
-float aumentarSprite=1.5f;
+float aumentarSprite=1.0f;
 int FPS = 50;
 int deltaT = 1000 / FPS;
 bool gravidade = true;

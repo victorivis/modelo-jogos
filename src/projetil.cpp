@@ -27,7 +27,7 @@ void Projetil::atualizar(int tempoDecorrido){
 void Projetil::mostrar(Tela& tela){
     if(_inativo == false){
         SDL_Rect origem = {_posImagem.x, _posImagem.y, _tamanho.x, _tamanho.y};
-        SDL_Rect destino = {_x + tela.getCameraX(), _y + tela.getCameraY(), _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite};
+        SDL_Rect destino = {(_x + tela.getCameraX()) * aumentarSprite, (_y + tela.getCameraY()) * aumentarSprite, _tamanho.x * aumentarSprite, _tamanho.y * aumentarSprite};
         SDL_RenderCopyEx(tela.getRenderer(), _tex, &origem, &destino, _angulo, NULL, SDL_FLIP_NONE);
     }
 }

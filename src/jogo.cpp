@@ -6,7 +6,7 @@
 #include <cmath>
 #include <iostream>
 
-Jogo::Jogo(){
+Jogo::Jogo(): _indice(0){
 
 }
 
@@ -30,15 +30,14 @@ void medirFPS(int& tempoDecorrido, Tela& tela, int numEntidades){
 }
 
 void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &indice){
-    //static int _indice = 0;
-
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+
     Retangulo colisaoPlayer = player.getCaixaColisao();
     Vector2 centroPlayer(colisaoPlayer.getCentroX(), colisaoPlayer.getCentroY());
 
-    float deltaX = mouseX - tela.getCameraX() - centroPlayer.x;
-    float deltaY = mouseY - tela.getCameraY() - centroPlayer.y;
+    float deltaX = mouseX / aumentarSprite - tela.getCameraX() - centroPlayer.x;
+    float deltaY = mouseY / aumentarSprite - tela.getCameraY() - centroPlayer.y;
 
     float hipotenusa = sqrt(deltaX * deltaX + deltaY * deltaY);
     if(hipotenusa == 0){
@@ -56,7 +55,7 @@ void atirar(Tela &tela, Player& player, std::vector<Projetil>& projeteis, int &i
 int Jogo::loopPrincipal(){
     Tela tela;
     Input input;
-    //_mapa.carregarMapa(tela, "mapa-inicial");
+    
     _mapa.carregarMapa("teste-morcego");
 
     bool rodarLoop=true;
@@ -103,7 +102,6 @@ int Jogo::loopPrincipal(){
     player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R, SDL_SCANCODE_LSHIFT});
     player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
 
-    _indice = 0;
     _projeteis = std::vector<Projetil>(8);
     int tempoInicial = SDL_GetTicks();
 
@@ -173,15 +171,26 @@ int Jogo::loopPrincipal(){
             }
             if(input.foiLiberada(SDL_SCANCODE_H)){
                 gravidade = !gravidade;
-                printf("Gravidade mata: %d\n", gravidade);
+                printf("Gravidade: %d\n", gravidade);
             }
             if(input.foiLiberada(SDL_SCANCODE_F)){
-                FPS = (FPS==50 ? 2000 : 50);
+                FPS = (FPS==50 ? 5000 : 50);
                 deltaT = 1000/FPS;
                 printf("Limite de FPS: %d\n", FPS);
             }
 
             const int velocidadeCamera = 10;
+
+            if(input.foiLiberada(SDL_SCANCODE_P)){
+                bool estaSeguindo = tela.seguirCamera();
+
+                estaSeguindo ? 
+                    tela.selecionarSeguirCamera(nullptr, nullptr) : 
+                    tela.selecionarSeguirCamera(player.getpX(), player.getpY());
+
+                printf("Camera segue player: %d\n", !estaSeguindo);
+            }
+
             if(input.estaPressionada(SDL_SCANCODE_UP)){
                 tela.moverCameraY(-velocidadeCamera);
             }

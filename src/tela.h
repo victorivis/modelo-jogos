@@ -20,7 +20,7 @@ class Tela{
         SDL_Window* getWindow();
         void atualizarTamanhoCamera();
         void selecionarSeguirCamera(float* seguirX, float* seguirY);
-        void seguirCamera();
+        bool seguirCamera();
         void moverCameraX(int X);
         void moverCameraY(int Y);
         int getCameraX();

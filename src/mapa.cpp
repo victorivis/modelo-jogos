@@ -18,14 +18,16 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
     _caminhoMorcegos.clear();
     _portas.clear();
 
-    std::cout << _ladeiras.size() << "\n";
-
     //Carrega o novo mapa
     std::string nomeArquivo = (caminhoBase + caminhoParaMapa + ".tmx");
 
     tinyxml2::XMLDocument DocumentoMapa;
     DocumentoMapa.LoadFile(nomeArquivo.c_str());
-    std::cout << nomeArquivo << "\n";
+
+    if(mostrarDebug){
+        std::cout << "\n";
+        std::cout << nomeArquivo << "\n";
+    }
 
     tinyxml2::XMLElement* pMapa = DocumentoMapa.FirstChildElement("map");
     int larguraBloco = pMapa->IntAttribute("tilewidth");
@@ -65,7 +67,9 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
                 Vector2 p1 = Vector2(x, y);
                 Vector2 p2 = Vector2( (stoi(ponto2[0]) + x), (stoi(ponto2[1]) + y));
                 
-                printf("p1(%d, %d), p2(%d, %d)\n", p1.x, p1.y, p2.x, p2.y);
+                if(mostrarDebug){
+                    printf("Ladeira: p1(%d, %d), p2(%d, %d)\n", p1.x, p1.y, p2.x, p2.y);
+                }
 
                 _ladeiras.push_back(Inclinacao(p1, p2));
 
@@ -212,7 +216,10 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
 
     //Renderizando mapa
     while(pLayer){
-        std::cout << "existe Layer\n";
+        if(mostrarDebug){
+            std::cout << "Existe layer de imagens\n";
+        }
+
         tinyxml2::XMLElement* pData = pLayer->FirstChildElement("data");
         while(pData){
             const char* stringMapa = pData->GetText();
@@ -274,7 +281,10 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
         }
     }
 
-    std::cout << "Numero de portas: " << _portas.size() << "\n";
+    if(mostrarDebug){
+        printf("Numero dos elementos\n");
+        printf("portas: %d, morcegos: %d, blocos moveis: %d\n", _portas.size(), _caminhoMorcegos.size(), _blocosMoveis.size());
+    }
 }
 
 void Mapa::atualizar(int tempoDecorrido){
@@ -297,9 +307,6 @@ void Mapa::mostrar(Tela& tela){
             _colisoes[i].exibirRetangulo(tela);    
         }
     }
-    for(int i=0; i<_ladeiras.size(); i++){
-        _ladeiras[i].mostrar(tela);
-    }
 
     for(int i=0; i<_blocosAnimados.size(); i++){
         _blocosAnimados[i].mostrar(tela);
@@ -309,9 +316,14 @@ void Mapa::mostrar(Tela& tela){
         _blocosMoveis[i].mostrar(tela);
     }
 
-    for(int i=0; i<_portas.size(); i++){
-        //Retangulo teste = _portas[i].getRetangulo();
-        _portas[i].getRetangulo().exibirRetangulo(tela);
+    if(exibirColisoes){
+        for(int i=0; i<_ladeiras.size(); i++){
+            _ladeiras[i].mostrar(tela);
+        }
+
+        for(int i=0; i<_portas.size(); i++){
+            _portas[i].getRetangulo().exibirRetangulo(tela);
+        }
     }
 }
 

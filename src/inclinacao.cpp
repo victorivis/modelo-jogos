@@ -22,12 +22,17 @@ bool Inclinacao::estaColidindo(Player& player){
 
 void Inclinacao::lidarColisao(Player& player){
     if(estaColidindo(player)){
-        printf("Colidindo inclincacao, seno: %f\n", _seno);
+        if(mostrarDebug){
+            printf("Colidindo inclincacao, seno: %f\n", _seno);
+        }
         player.setY( (player.getX() - _p1.x) * _seno + _p1.y -player.getAltura()-1);
     }
 }
 
 void Inclinacao::mostrar(Tela& tela){
     SDL_SetRenderDrawColor(tela.getRenderer(), 255, 0, 0, 255);
-    SDL_RenderDrawLine(tela.getRenderer(), _p1.x, _p1.y, _p2.x, _p2.y);
+    const Vector2 p1 = Vector2( (_p1.x + tela.getCameraX()) * aumentarSprite, (_p1.y + tela.getCameraY()) * aumentarSprite);
+    const Vector2 p2 = Vector2( (_p2.x + tela.getCameraX()) * aumentarSprite, (_p2.y + tela.getCameraY()) * aumentarSprite);
+
+    SDL_RenderDrawLine(tela.getRenderer(), p1.x, p1.y, p2.x, p2.y);
 }

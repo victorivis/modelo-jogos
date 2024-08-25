@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="53">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="54">
  <tileset firstgid="1" name="world_tileset" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="../tileset/world_tileset.png" width="256" height="256"/>
   <tile id="20">
@@ -52,6 +52,9 @@
    </animation>
   </tile>
  </tileset>
+ <tileset firstgid="269" name="Interiors_free_16x16" tilewidth="16" tileheight="16" tilecount="1424" columns="16">
+  <image source="../tileset/Interiors_free_16x16.png" width="256" height="1424"/>
+ </tileset>
  <layer id="1" name="Camada de Blocos 1" width="30" height="20">
   <data encoding="csv">
 3,3,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,15,
@@ -61,8 +64,8 @@
 0,0,0,0,0,36,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
 1,1,21,257,257,257,257,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,
-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
-1,1,0,0,131,133,133,132,134,0,0,0,0,0,0,0,0,0,0,88,88,88,1,89,89,89,89,89,0,0,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,404,
+1,1,0,0,131,133,133,132,134,0,0,0,0,0,0,0,0,0,0,88,88,88,1,89,89,89,89,89,0,420,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
@@ -76,6 +79,13 @@
 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,15,13
 </data>
  </layer>
+ <objectgroup id="5" name="portas">
+  <object id="53" x="465.125" y="123.063" width="13.6875" height="20.4375">
+   <properties>
+    <property name="destino" value="teste-morcego"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="2" name="colisoes">
   <object id="1" x="-2.66667" y="144.667" width="274.917" height="15.8333"/>
   <object id="2" x="304" y="143.667" width="176.333" height="16.3333"/>

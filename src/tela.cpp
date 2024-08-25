@@ -50,7 +50,9 @@ Tela::Tela(): _seguirX(nullptr), _seguirY(nullptr){
 
     _camera = {0, 0, definicoesJanela::comprimento, definicoesJanela::altura};
     
-    mostrarDrivers();
+    if(mostrarDebug){
+        mostrarDrivers();
+    }
 }
 
 Tela::~Tela(){
@@ -124,17 +126,18 @@ void Tela::atualizarTamanhoCamera(){
 }
 
 void Tela::selecionarSeguirCamera(float* seguirX, float* seguirY){
-    if(seguirX != nullptr && seguirY != nullptr){
-        _seguirX = seguirX;
-        _seguirY = seguirY;
-    }
+    _seguirX = seguirX;
+    _seguirY = seguirY;
 }
 
-void Tela::seguirCamera(){
-    if(_seguirX != nullptr){
+bool Tela::seguirCamera(){
+    if(_seguirX != nullptr && _seguirY != nullptr){
         _camera.x = _camera.w / (2.0 * aumentarSprite) - (*_seguirX);
         _camera.y = _camera.h / (2.0 * aumentarSprite) - (*_seguirY);
+
+        return true;
     }
+    return false;
 }
 
 void Tela::moverCameraX(int X){

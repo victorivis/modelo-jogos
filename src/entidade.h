@@ -33,6 +33,8 @@ class Entidade : public Imagem{
         bool atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
         Retangulo getCaixaColisao();
+
+        void debug();
         
     protected:
         int _indice;
