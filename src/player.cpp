@@ -13,14 +13,14 @@ void aplicarAtrito(float& delta, float atrito){
 }
 
 namespace constantesPlayer{
-    float moveSpeed = 2.0f;
+    float moveSpeed = 0.5f;
     float moveCap = 4.0f;
-    float atrito = 0.90f;
-    float forcaGravidade=0.8f;
-    float limiteGravidade=8.0f;
+    float atrito = 0.85f;
+    float forcaGravidade=0.45f;
+    float limiteGravidade=7.0f;
     float dashSpeed = moveSpeed*8;
-    int tempoPulo = 400;
-    float forcaPulo = 12*0.8f;//forcaGravidade;
+    int tempoPulo = 500;
+    float forcaPulo = 12*0.25f;//forcaGravidade;
 };
 
 //Por algum motivo eh impossivel selecionar a animacao no construtor
@@ -55,7 +55,7 @@ void Player::mover(Direcao direcao){
                     _dy -= constantesPlayer::forcaPulo * _tempoPulo / constantesPlayer::tempoPulo;
 
                     //Isso eh engracado, o player para nao tremer a tela fica enfiado dentro do bloco de colisao
-                    //Entao para conseguir pular precisa modificar a posicao dele para que ele saida de dentro do bloco
+                    //Entao para conseguir pular precisa modificar a posicao dele para que ele saia de dentro do bloco
                     if(_tempoPulo == constantesPlayer::tempoPulo){
                         _y -= 3;
                     }
@@ -67,7 +67,9 @@ void Player::mover(Direcao direcao){
             //_olhando = CIMA;
             break;
         case BAIXO:
-            if(_dy < constantesPlayer::moveCap) _dy += constantesPlayer::moveSpeed;
+            if(_dy < constantesPlayer::moveCap){
+                _dy += constantesPlayer::moveSpeed;
+            }
             //_olhando = BAIXO;
             break;
     }
@@ -140,7 +142,9 @@ void Player::executarControles(Input &input){
             _tempoPulo = 0;
         }
         
-        aplicarAtrito(_dy, constantesPlayer::atrito);
+        if(gravidade==false){
+            aplicarAtrito(_dy, constantesPlayer::atrito);
+        }
     }
 }
 

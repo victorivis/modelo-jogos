@@ -3,7 +3,7 @@
 
 bool mostrarDebug=true;
 bool exibirColisoes=false;
-float aumentarSprite=1.0f;
+float aumentarSprite=1.5f;
 int FPS = 50;
 int deltaT = 1000 / FPS;
 bool gravidade = true;

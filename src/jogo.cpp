@@ -66,46 +66,53 @@ int Jogo::loopPrincipal(){
     SDL_Texture* spriteMorcego = tela.carregarTextura("assets/sprites/morcego.png");
     SDL_Texture* spritePerseguidor = tela.carregarTextura("assets/sprites/alvo.png");
 
-    player = Player(alface, Vector2(16, 16), Vector2(), Vector2(0, 0));
-    player2 = Player(knight, Vector2(32, 32), Vector2(), Vector2(0, 0));
+    _players = {
+        Player(alface, Vector2(16, 16), Vector2(), Vector2(0, 0)),
+        Player(knight, Vector2(32, 32), Vector2(), Vector2(0, 0)),
+    };
 
-    player.setSpawnPoint(_mapa.getSpawnpoint());
-    player2.setSpawnPoint(_mapa.getSpawnpoint());
-    player.voltarParaSpawn();
-    player2.voltarParaSpawn();
+    if(_players.size() > 0) _players[0].adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R, SDL_SCANCODE_LSHIFT});
+    if(_players.size() > 1) _players[1].adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
+
+
+    for(int i=0; i<_players.size(); i++){
+        _players[i].setSpawnPoint(_mapa.getSpawnpoint());
+        _players[i].voltarParaSpawn();
+    }
 
     ataques = std::vector<Ataque>(1, Ataque(Retangulo(500, 500, 40, 40), 200));
     //O if eh para destruir o vector caminhoMorcegos
     if(true){
-        std::vector<Linha> caminhoMorcegos = _mapa.getMorcegos();
+        //std::vector<Linha> caminhoMorcegos = _mapa.getMorcegos();
         int velocidadeMorcegos = 2;
 
-        for(int i=0; i<caminhoMorcegos.size(); i++){
-            morcegos.push_back(Morcego(spriteMorcego, Vector2(16, 24), caminhoMorcegos[i].p1, Vector2(0, 0), caminhoMorcegos[i].p2, velocidadeMorcegos));
-        }
+        //for(int i=0; i<caminhoMorcegos.size(); i++){
+        //    morcegos.push_back(Morcego(spriteMorcego, Vector2(16, 24), caminhoMorcegos[i].p1, Vector2(0, 0), caminhoMorcegos[i].p2, velocidadeMorcegos));
+        //}
     }
 
     perseguidores = std::vector<Perseguidor>(2, Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5));
-    if(morcegos.size() > 0 && perseguidores.size() > 0){
+    
+    /*
+    if(_mapa.numMorcegos() > 0 && perseguidores.size() > 0){
         perseguidores[0].perseguir(morcegos[0].getpX(), morcegos[0].getpY());
     }
+    */
+
     if(perseguidores.size() > 1){
-        perseguidores[1].perseguir(player.getpX(), player.getpY());
+        perseguidores[1].perseguir(_players[0].getpX(), _players[0].getpY());
     }    
 
     //Testar o desempenho
     for(int i=2; i<4; i++){
         perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + i/10.0f));
-        perseguidores[i].perseguir(player.getpX(), player.getpY());
+        perseguidores[i].perseguir(_players[0].getpX(), _players[0].getpY());
     }
-
-    player.adicionarControles({SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_R, SDL_SCANCODE_LSHIFT});
-    player2.adicionarControles({SDL_SCANCODE_I, SDL_SCANCODE_K, SDL_SCANCODE_J, SDL_SCANCODE_L, SDL_SCANCODE_RSHIFT});
 
     _projeteis = std::vector<Projetil>(8);
     int tempoInicial = SDL_GetTicks();
 
-    tela.selecionarSeguirCamera(player.getpX(), player.getpY());
+    tela.selecionarSeguirCamera(_players[0].getpX(), _players[0].getpY());
     while(rodarLoop){
 
         input.resetar();
@@ -120,12 +127,12 @@ int Jogo::loopPrincipal(){
 
             if(evento.type == SDL_MOUSEBUTTONDOWN){
                 if(evento.button.button == SDL_BUTTON_RIGHT){
-                    atirar(tela, player, _projeteis, _indice);
+                    atirar(tela, _players[0], _projeteis, _indice);
                 }
 
                 if(evento.button.button == SDL_BUTTON_LEFT){
                     if(ataques[0].estaRodando() == false){
-                        ataques[0].invocarAtaque(player, player.getDirecao());
+                        ataques[0].invocarAtaque(_players[0], _players[0].getDirecao());
                     }
                 }
             }
@@ -134,7 +141,7 @@ int Jogo::loopPrincipal(){
                 if(evento.wheel.y > 0) {
                     int posicaoAtual = perseguidores.size();
                     perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + (posicaoAtual-1)/10.0f ));
-                    perseguidores[posicaoAtual].perseguir(player.getpX(), player.getpY());
+                    perseguidores[posicaoAtual].perseguir(_players[0].getpX(), _players[0].getpY());
                     
                 } 
                 else if(evento.wheel.y < 0) {
@@ -157,12 +164,16 @@ int Jogo::loopPrincipal(){
                 exibirColisoes = !exibirColisoes;
                 printf("exibirColisoes: %d\n", exibirColisoes);
             }
+
+            const float fatorZoom=0.25;
             if(input.foiPressionada(SDL_SCANCODE_MINUS)){
-                aumentarSprite++;
+                aumentarSprite+=fatorZoom;
+                std::cout << "Tamanho sprite" << aumentarSprite << "\n";
             }
             if(input.foiPressionada(SDL_SCANCODE_EQUALS)){
-                if(aumentarSprite>1){
-                    aumentarSprite--;
+                if(aumentarSprite - fatorZoom > 0){
+                    aumentarSprite-=fatorZoom;
+                    std::cout << "Tamanho sprite" << aumentarSprite << "\n";
                 }
             }
             if(input.foiLiberada(SDL_SCANCODE_Z)){
@@ -186,7 +197,7 @@ int Jogo::loopPrincipal(){
 
                 estaSeguindo ? 
                     tela.selecionarSeguirCamera(nullptr, nullptr) : 
-                    tela.selecionarSeguirCamera(player.getpX(), player.getpY());
+                    tela.selecionarSeguirCamera(_players[0].getpX(), _players[0].getpY());
 
                 printf("Camera segue player: %d\n", !estaSeguindo);
             }
@@ -204,8 +215,10 @@ int Jogo::loopPrincipal(){
                 tela.moverCameraX(-velocidadeCamera);
             }
         }
-        player.executarControles(input);
-        player2.executarControles(input);
+
+        for(int i=0; i<_players.size(); i++){
+            _players[i].executarControles(input);
+        }
 
         //Estabilizando a taxa de fps
         int tempoAtual = SDL_GetTicks();
@@ -227,16 +240,12 @@ int Jogo::loopPrincipal(){
 }
 
 void Jogo::atualizar(int tempo){
-    player.atualizar(tempo);
-    player2.atualizar(tempo);
-    
-    for(int i=0; i<morcegos.size(); i++){
-        morcegos[i].atualizar(tempo);
+    for(int i=0; i<_players.size(); i++){
+        _players[i].atualizar(tempo);
     }
 
     _mapa.atualizar(tempo);
-    _mapa.lidarColisao(player);
-    _mapa.lidarColisao(player2);
+    _mapa.lidarColisao(_players);
 
     for(int i=0; i<_projeteis.size(); i++){
         _projeteis[i].atualizar(tempo);
@@ -252,7 +261,9 @@ void Jogo::atualizar(int tempo){
             _projeteis[i].lidarColisao(colisoes[j]);
         }
 
-        _projeteis[i].lidarColisao(player2);
+        for(int j=1; j<_players.size(); j++){
+            _projeteis[i].lidarColisao(_players[j]);
+        }
 
         for(int j=0; j<perseguidores.size(); j++){
             _projeteis[i].lidarColisao(perseguidores[j]);
@@ -262,8 +273,9 @@ void Jogo::atualizar(int tempo){
     for(int i=0; i<ataques.size(); i++){
         ataques[i].atualizar(tempo);
         
-        ataques[i].lidarColisao(player2);
-        ataques[i].lidarColisao(morcegos);
+        for(int j=1; j<_players.size(); j++){
+            ataques[i].lidarColisao(_players[j]);
+        }
         
         for(int j=0; j<perseguidores.size(); j++){
             ataques[i].lidarColisao(perseguidores[j]);
@@ -273,15 +285,12 @@ void Jogo::atualizar(int tempo){
 
 void Jogo::desenhar(Tela &tela){
     _mapa.mostrar(tela);
-    player.mostrar(tela);
-    player2.mostrar(tela);
+    for(int i=0; i<_players.size(); i++){
+        _players[i].mostrar(tela);
+    }
 
     for(int i=0; i<perseguidores.size(); i++){
         perseguidores[i].mostrar(tela);
-    }
-
-    for(int i=0; i<morcegos.size(); i++){
-        morcegos[i].mostrar(tela);
     }
 
     for(int i=0; i<ataques.size(); i++){

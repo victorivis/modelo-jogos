@@ -17,11 +17,10 @@ class Jogo{
     
     private:
         Mapa _mapa;
-        Player player;
-        Player player2;
+        std::vector<Player> _players;
         std::vector<Projetil> _projeteis;
         int _indice;
-        std::vector<Morcego> morcegos;
+        //std::vector<Morcego> morcegos;
         std::vector<Perseguidor> perseguidores;
         std::vector<Ataque> ataques;
         

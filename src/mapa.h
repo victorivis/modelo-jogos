@@ -41,11 +41,12 @@ class Mapa{
         ~Mapa(){};
         
         void carregarMapa(std::string caminhoParaMapa);
-        void lidarColisao(Player& player);
+        void lidarColisao(std::vector<Player>& player);
         void atualizar(int tempoDecorrido);
         void mostrar(Tela& tela);
         std::vector<Retangulo> getColisoes();
-        std::vector<Linha> getMorcegos();
+        std::vector<Morcego> getMorcegos();
+        int numMorcegos();
         Vector2 getSpawnpoint();
 
     private:
@@ -55,6 +56,6 @@ class Mapa{
         std::vector<Inclinacao> _ladeiras;
         std::vector<Imagem> _blocos;
         std::vector<Animacao> _blocosAnimados;  
-        std::vector<Linha> _caminhoMorcegos;  
+        std::vector<Morcego> _Morcegos;  
         std::vector<Porta> _portas;
 };

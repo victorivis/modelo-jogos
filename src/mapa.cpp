@@ -9,13 +9,17 @@
 char caminhoBase[] = "assets/mapas/";
 
 void Mapa::carregarMapa(std::string caminhoParaMapa){
+    SDL_Texture* spriteMorcego = Tela::carregarTextura("assets/sprites/morcego.png");
+    const int velocidadeMorcego = 1;
+    const int velocidadeBlocosMoveis = 2;
+
     //Destroi o mapa anterior, se existir
     _colisoes.clear();
     _blocosMoveis.clear();
     _ladeiras.clear();
     _blocos.clear();
     _blocosAnimados.clear();
-    _caminhoMorcegos.clear();
+    _Morcegos.clear();
     _portas.clear();
 
     //Carrega o novo mapa
@@ -99,7 +103,8 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
                 Vector2 p1 = Vector2(x, y);
                 Vector2 p2 = Vector2( (stoi(ponto2[0]) + x), (stoi(ponto2[1]) + y));
 
-                _caminhoMorcegos.push_back(Linha(p1, p2));
+                //_Morcegos.push_back(Linha(p1, p2));
+                _Morcegos.push_back(Morcego(spriteMorcego, Vector2(16, 24), p1, Vector2(0, 0), p2, velocidadeMorcego));
 
                 pMorcego = pMorcego->NextSiblingElement("object");
             }
@@ -125,7 +130,7 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
                 Vector2 p1 = Vector2(x, y);
                 Vector2 p2 = Vector2( (stoi(ponto2[0]) + x), (stoi(ponto2[1]) + y));
 
-                _blocosMoveis.push_back(BlocoMovel(texturaPlataforma, tamanhoPlataforma, p1, Vector2(0, 0), p2, 4));
+                _blocosMoveis.push_back(BlocoMovel(texturaPlataforma, tamanhoPlataforma, p1, Vector2(0, 0), p2, velocidadeBlocosMoveis));
 
                 pBlocosMoveis = pBlocosMoveis->NextSiblingElement("object");
             }
@@ -283,7 +288,7 @@ void Mapa::carregarMapa(std::string caminhoParaMapa){
 
     if(mostrarDebug){
         printf("Numero dos elementos\n");
-        printf("portas: %d, morcegos: %d, blocos moveis: %d\n", _portas.size(), _caminhoMorcegos.size(), _blocosMoveis.size());
+        printf("portas: %d, morcegos: %d, blocos moveis: %d\n", _portas.size(), _Morcegos.size(), _blocosMoveis.size());
     }
 }
 
@@ -294,6 +299,10 @@ void Mapa::atualizar(int tempoDecorrido){
 
     for(int i=0; i<_blocosMoveis.size(); i++){
         _blocosMoveis[i].atualizar();
+    }
+
+    for(int i=0; i<numMorcegos(); i++){
+        _Morcegos[i].atualizar(tempoDecorrido);
     }
 }
 
@@ -325,96 +334,116 @@ void Mapa::mostrar(Tela& tela){
             _portas[i].getRetangulo().exibirRetangulo(tela);
         }
     }
+
+    for(int i=0; i<numMorcegos(); i++){
+        _Morcegos[i].mostrar(tela);
+    }
 }
 
-void Mapa::lidarColisao(Player& player){
-    bool houveColisao(false);
+void Mapa::lidarColisao(std::vector<Player>& players){
+    for(Player& player : players){
+        bool houveColisao(false);
 
-    //Blocos solidos
-    for(int i=0; i<_colisoes.size(); i++){
-        Retangulo caixaPlayer = player.getCaixaColisao();
-        caixaPlayer.setY(caixaPlayer.getCima()+1);
+        //Blocos solidos
+        for(int i=0; i<_colisoes.size(); i++){
+            Retangulo caixaPlayer = player.getCaixaColisao();
+            caixaPlayer.setY(caixaPlayer.getCima()+1);
 
-        Direcao daColisao = _colisoes[i].ladoColisao(caixaPlayer);
+            Direcao daColisao = _colisoes[i].ladoColisao(caixaPlayer);
 
-        caixaPlayer.setY(caixaPlayer.getCima()-1);
+            caixaPlayer.setY(caixaPlayer.getCima()-1);
 
-        if(daColisao != NENHUMA){
-            if(daColisao == DIREITA){
-                player.setX(_colisoes[i].getDireita()+1);
-            }
-            else if(daColisao == ESQUERDA){
-                player.setX(_colisoes[i].getEsquerda()-caixaPlayer.getLargura()-1);
-            }
-            else if(daColisao == CIMA){
-                if(player.estaCaindo()){
-                    player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura());
-                    player.tocouChao();
+            if(daColisao != NENHUMA){
+                if(daColisao == DIREITA){
+                    player.setX(_colisoes[i].getDireita()+1);
                 }
-            }
-            else if(daColisao == BAIXO){
-                player.setY(_colisoes[i].getBaixo()+1);
-            }
-            
-            houveColisao = true;
-        }
-    }
-
-    //Ladeiras
-    for(int i=0; i<_ladeiras.size(); i++){
-        _ladeiras[i].lidarColisao(player);
-    }
-
-    //Plataformas voadoras
-    for(int i=0; i<_blocosMoveis.size(); i++){
-        Retangulo caixaPlayer = player.getCaixaColisao();
-        Retangulo caixaBloco = _blocosMoveis[i].getHitBox();
-
-        caixaPlayer.setY(caixaPlayer.getCima()+1);
-
-        Direcao daColisao = caixaBloco.ladoColisao(caixaPlayer);
-
-        caixaPlayer.setY(caixaPlayer.getCima()-1);
-
-        if(daColisao != NENHUMA){
-            if(daColisao == DIREITA){
-                player.setX(caixaBloco.getDireita()+1);
-            }
-            else if(daColisao == ESQUERDA){
-                player.setX(caixaBloco.getEsquerda()-caixaPlayer.getLargura()-1);
-            }
-            else if(daColisao == CIMA){
-                if(player.estaCaindo()){
-                    player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()+1);
-                    player.tocouChao();
+                else if(daColisao == ESQUERDA){
+                    player.setX(_colisoes[i].getEsquerda()-caixaPlayer.getLargura()-1);
                 }
+                else if(daColisao == CIMA){
+                    if(player.estaCaindo()){
+                        player.setY(_colisoes[i].getCima()-caixaPlayer.getAltura());
+                        player.tocouChao();
+                    }
+                }
+                else if(daColisao == BAIXO){
+                    player.setY(_colisoes[i].getBaixo()+1);
+                }
+                
+                houveColisao = true;
             }
-            else if(daColisao == BAIXO){
-                player.setY(caixaBloco.getBaixo()+1);
+        }
+
+        //Ladeiras
+        for(int i=0; i<_ladeiras.size(); i++){
+            _ladeiras[i].lidarColisao(player);
+        }
+
+        //Plataformas voadoras
+        for(int i=0; i<_blocosMoveis.size(); i++){
+            Retangulo caixaPlayer = player.getCaixaColisao();
+            Retangulo caixaBloco = _blocosMoveis[i].getHitBox();
+
+            caixaPlayer.setY(caixaPlayer.getCima()+1);
+
+            Direcao daColisao = caixaBloco.ladoColisao(caixaPlayer);
+
+            caixaPlayer.setY(caixaPlayer.getCima()-1);
+
+            if(daColisao != NENHUMA){
+                if(daColisao == DIREITA){
+                    player.setX(caixaBloco.getDireita()+1);
+                }
+                else if(daColisao == ESQUERDA){
+                    player.setX(caixaBloco.getEsquerda()-caixaPlayer.getLargura()-1);
+                }
+                else if(daColisao == CIMA){
+                    if(player.estaCaindo()){
+                        player.setY(caixaBloco.getCima()-caixaPlayer.getAltura()+1);
+                        player.tocouChao();
+                    }
+                }
+                else if(daColisao == BAIXO){
+                    player.setY(caixaBloco.getBaixo()+1);
+                }
+
+                player.empurrarX(_blocosMoveis[i].getDeslocamentoX());
+                player.empurrarY(_blocosMoveis[i].getDeslocamentoY());
+                
+                /*
+                if(_blocosMoveis[i].getDeslocamentoY() < 0){
+                    player.empurrarY(_blocosMoveis[i].getDeslocamentoY());
+                }
+                else{
+                    player.empurrarY(_blocosMoveis[i].getDeslocamentoY()/2);
+                }
+                */
+
+                houveColisao = true;
             }
-
-            player.empurrarX(_blocosMoveis[i].getDeslocamentoX());
-            player.empurrarY(_blocosMoveis[i].getDeslocamentoY());
-
-            houveColisao = true;
         }
-    }
 
-    //Verifica se o player esta no ar
-    if(houveColisao == false){
-        if(player.estaCaindo() == false){
-            player.caiu();
+        //Verifica se o player esta no ar
+        if(houveColisao == false){
+            if(player.estaCaindo() == false){
+                player.caiu();
+            }
         }
-    }
 
-    //Portas
-    Retangulo caixaPlayer = player.getCaixaColisao();
-    for(int i=0; i<_portas.size(); i++){
-        if(_portas[i].getRetangulo().colisaoAABB(caixaPlayer)){
-            carregarMapa(_portas[i].getDestino());
-            player.setSpawnPoint(getSpawnpoint());
-            player.voltarParaSpawn();
-            break;
+        //Portas
+        Retangulo caixaPlayer = player.getCaixaColisao();
+        for(int i=0; i<_portas.size(); i++){
+            if(_portas[i].getRetangulo().colisaoAABB(caixaPlayer)){
+                carregarMapa(_portas[i].getDestino());
+
+                for(int i=0; i<players.size(); i++){
+                    players[i].setSpawnPoint(getSpawnpoint());
+                    players[i].voltarParaSpawn();
+                }
+
+
+                break;
+            }
         }
     }
 }
@@ -423,8 +452,12 @@ std::vector<Retangulo> Mapa::getColisoes(){
     return _colisoes;
 }
 
-std::vector<Linha> Mapa::getMorcegos(){
-    return _caminhoMorcegos;
+std::vector<Morcego> Mapa::getMorcegos(){
+    return _Morcegos;
+}
+
+int Mapa::numMorcegos(){
+    return _Morcegos.size();
 }
 
 Vector2 Mapa::getSpawnpoint(){
