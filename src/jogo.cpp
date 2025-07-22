@@ -139,13 +139,16 @@ int Jogo::loopPrincipal(){
 
             if(evento.type == SDL_MOUSEWHEEL) {
                 if(evento.wheel.y > 0) {
-                    int posicaoAtual = perseguidores.size();
-                    perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + (posicaoAtual-1)/10.0f ));
-                    perseguidores[posicaoAtual].perseguir(_players[0].getpX(), _players[0].getpY());
+                    for(int i=0; i<12; i++){
+                        int posicaoAtual = perseguidores.size();
+                        perseguidores.push_back(Perseguidor(spritePerseguidor, Vector2(16, 16), Vector2(400, 400), Vector2(0, 0), 1.5 + (posicaoAtual-1)/10.0f ));
+                        perseguidores[posicaoAtual].perseguir(_players[0].getpX(), _players[0].getpY());
+                    }                  
                     
                 } 
                 else if(evento.wheel.y < 0) {
-                    if(perseguidores.size() > 1){
+                    int cont=5;
+                    while(perseguidores.empty()==false && cont--){
                         perseguidores.pop_back();
                     }
                 }

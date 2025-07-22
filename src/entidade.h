@@ -20,6 +20,7 @@ class Entidade : public Imagem{
         Entidade(){}
         ~Entidade(){};
         Entidade(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem);
+        Entidade(const Entidade& outro);
 
         void adicionarAnimacao(std::string nome, infoAnimacao info);
         void selecionarAnimacao(std::string nome);
@@ -39,6 +40,7 @@ class Entidade : public Imagem{
     protected:
         int _indice;
         infoAnimacao* _animacaoAtual;
+        std::string _posAnimacao;
         std::map<std::string, infoAnimacao> _animacoes;
         Retangulo _caixaColisao;
         int _tempoDecorridoFrame;

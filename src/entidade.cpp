@@ -1,8 +1,25 @@
 #include "entidade.h"
 #include <iostream>
+#include <stdexcept>
 
 Entidade::Entidade(SDL_Texture* tex, Vector2 tamanho, Vector2 posTela, Vector2 posImagem)
     : Imagem(tex, tamanho, posTela, posImagem), _indice(-1), _animacaoAtual(nullptr), _tempoDecorridoFrame(1), _ativo(true){}
+
+Entidade::Entidade(const Entidade& outra)
+    : Imagem(outra),
+      _indice(outra._indice),
+      _animacaoAtual(outra._animacaoAtual), 
+      _posAnimacao(outra._posAnimacao),
+      _animacoes(outra._animacoes),
+      _caixaColisao(outra._caixaColisao),
+      _tempoDecorridoFrame(outra._tempoDecorridoFrame),
+      _ativo(outra._ativo)
+{
+    if (!outra._posAnimacao.empty() && _animacoes.count(_posAnimacao)) {
+        _animacaoAtual = &_animacoes[_posAnimacao];
+    }
+}
+
 
 bool Entidade::atualizar(int tempoDecorrido){
     bool foiAtualizado=false;
@@ -38,8 +55,11 @@ void Entidade::adicionarAnimacao(std::string nome, infoAnimacao info){
 
 void Entidade::selecionarAnimacao(std::string nome){
     if(_animacoes.count(nome) != 0 && _animacaoAtual != &_animacoes[nome]){
+        _posAnimacao = nome;
         _indice = 0;
-        _animacaoAtual = &_animacoes[nome];
+
+        auto it = _animacoes.find(nome);
+        _animacaoAtual = &it->second;
 
         _posImagem.y = _animacaoAtual->_frameInicial.y;
         _posImagem.x = _animacaoAtual->_frameInicial.x;
